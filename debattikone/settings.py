@@ -1,6 +1,8 @@
+# vim: tabstop=4 expandtab autoindent shiftwidth=4 fileencoding=utf-8
+
 # Django settings for debattikone project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -55,7 +57,7 @@ MEDIA_URL = ''
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'a+3zj&0ocqlag74)plur^_yw4lk3^34%8jj$l+s-4_@9#)vvg!'
@@ -92,3 +94,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 )
+
+from custom_settings import *
+
+# EOF
+
