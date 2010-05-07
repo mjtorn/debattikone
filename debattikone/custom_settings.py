@@ -4,7 +4,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Markus Törnqvist', 'mjt@fadconsulting.com',
+    ('Markus Törnqvist', 'mjt@fadconsulting.com'),
 )
 
 TIME_ZONE = 'Europe/Helsinki'
