@@ -123,5 +123,47 @@ class Test010Models(StatefulTestCase):
 
         self.State.other_debate = debate
 
+    def test_031_fail_antagonist_inviting(self):
+        mjt = auth_models.User.objects.get(username='mjt')
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        try:
+            self.State.other_debate.invite(antagonist, mjt)
+            raise AssertionError('Should have failed')
+        except models.DebattikoneInvalidUserException, e:
+            print 'Caught %s' % e
+
+    def test_032_fail_inviting_self(self):
+        mjt = auth_models.User.objects.get(username='mjt')
+
+        try:
+            self.State.other_debate.invite(mjt, mjt)
+            raise AssertionError('Should have failed')
+        except models.DebattikoneInvalidUserException, e:
+            print 'Caught %s' % e
+
+    def test_033_invite_antagonist(self):
+        mjt = auth_models.User.objects.get(username='mjt')
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        self.State.other_debate.invite(mjt, antagonist)
+
+    def test_034_fail_third_join(self):
+        third = auth_models.User.objects.get(username='third')
+
+        can_participate = self.State.other_debate.can_participate(third)
+        assert not can_participate, 'antagonist was invited, not you'
+
+        try:
+            self.State.other_debate.join(third)
+            raise AssertionError('You were not invited')
+        except models.DebattikoneInvalidUserException, e:
+            print 'Caught %s' % e
+
+    def test_035_antagonist_join(self):
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        self.State.other_debate.join(antagonist)
+
 # EOF
 
