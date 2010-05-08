@@ -9,6 +9,9 @@ from django.test import TestCase
 from nose.util import try_run
 
 class StatefulTestCase(TestCase):
+    class State:
+        pass
+
     def setUp(self):
         names = ('setup',)
         try_run(self, names)
@@ -50,9 +53,6 @@ class StatefulTestCase(TestCase):
 
 class Test010Models(StatefulTestCase):
     fixtures = ['test_data.json']
-
-    class State:
-        pass
 
     def test_010_create_topic(self):
         topic = models.Topic()
