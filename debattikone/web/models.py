@@ -13,7 +13,7 @@ class Topic(models.Model):
 
 class DebateMessage(models.Model):
     user = models.ForeignKey(auth_models.User)
-    topic = models.ForeignKey(Topic)
+    debate = models.ForeignKey("Debate")
 
 
 class Debate(models.Model):
