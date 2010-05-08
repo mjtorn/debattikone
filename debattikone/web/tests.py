@@ -1,23 +1,34 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
+# vim: tabstop=4 expandtab autoindent shiftwidth=4 fileencoding=utf-8
 
 from django.test import TestCase
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+class StatefulTestCase(TestCase):
+    def _fixture_setup(self):
+        """Set up transaction management, but skip real reset
         """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+        from django.test.testcases import connections_support_transactions
+        from django.test.testcases import disable_transaction_methods
+        from django.db import transaction, connections, DEFAULT_DB_ALIAS
 
->>> 1 + 1 == 2
-True
-"""}
+        if not connections_support_transactions():
+            return super(TestCase, self)._fixture_setup()
+
+        # If the test case has a multi_db=True flag, setup all databases.
+        # Otherwise, just use default.
+        if getattr(self, 'multi_db', False):
+            databases = connections
+        else:
+            databases = [DEFAULT_DB_ALIAS]
+
+        for db in databases:
+            transaction.enter_transaction_management(using=db)
+            transaction.managed(True, using=db)
+        disable_transaction_methods()
+
+        from django.contrib.sites.models import Site
+        Site.objects.clear_cache()
+
+
+# EOF
 
