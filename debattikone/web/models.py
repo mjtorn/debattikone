@@ -20,6 +20,14 @@ class Debate(models.Model):
     topic = models.ForeignKey(Topic)
     user1 = models.ForeignKey(auth_models.User)
     user2 = models.ForeignKey(auth_models.User, null=True, blank=True, default=None)
+    msg_limit = models.IntegerField(default=10)
+
+    def can_participate(self, user):
+        if self.user2 is None:
+            return True
+
+    def is_closed(self):
+        return self.debatemessage_set.count() == self.msg_limit
 
 # EOF
 
