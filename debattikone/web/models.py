@@ -23,6 +23,9 @@ class Debate(models.Model):
     msg_limit = models.IntegerField(default=10)
 
     def can_participate(self, user):
+        if self.user1 == user or self.user2 == user:
+            return False
+
         if self.user2 is None:
             return True
 
