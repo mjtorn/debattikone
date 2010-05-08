@@ -91,7 +91,7 @@ class Test010Models(StatefulTestCase):
 
         assert can_participate, 'You are the other one, should be ok'
 
-        self.State.debate.user2 = antagonist
+        self.State.debate.join(antagonist)
 
         self.State.debate.save()
 
