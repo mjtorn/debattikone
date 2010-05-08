@@ -4,7 +4,6 @@ from django.contrib.auth import models as auth_models
 
 from debattikone.web import models
 
-from django.core import mail
 from django.test import TestCase
 
 from nose.util import try_run
