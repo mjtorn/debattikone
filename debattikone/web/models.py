@@ -36,7 +36,10 @@ class Debate(models.Model):
         if self.user1 == user or self.user2 == user:
             return False
 
-        if self.user2 is None:
+        if self.user2 is None and self.invited is None:
+            return True
+
+        if self.user2 is None and self.invited == user:
             return True
 
     def is_closed(self):
@@ -45,6 +48,9 @@ class Debate(models.Model):
     def invite(self, inviter, invitee):
         if inviter != self.user1:
             raise DebattikoneInvalidUserException('You are not the creator')
+
+        if invitee == self.user1:
+            raise DebattikoneInvalidUserException('Can not invite self')
 
         self.invited = invitee
 
