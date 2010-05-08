@@ -2,6 +2,8 @@
 
 from django.contrib.auth import models as auth_models
 
+from debattikone.web import models
+
 from django.core import mail
 from django.test import TestCase
 
@@ -46,6 +48,19 @@ class StatefulTestCase(TestCase):
         for db in databases:
             if hasattr(self, 'fixtures'):
                 call_command('loaddata', *self.fixtures, **{'verbosity': 0, 'commit': False, 'database': db})
+
+class Test010Models(StatefulTestCase):
+    fixtures = ['test_data.json']
+
+    def test_010_create_topic(self):
+        topic = models.Topic()
+
+        topic.title = 'Test debate'
+        topic.summary = 'Summary for test debate'
+
+        topic.save()
+
+        self.topic = topic
 
 # EOF
 
