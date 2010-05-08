@@ -2,7 +2,17 @@
 
 from django.test import TestCase
 
+from nose.util import try_run
+
 class StatefulTestCase(TestCase):
+    def setUp(self):
+        names = ('setup',)
+        try_run(self, names)
+
+    def tearDown(self):
+        names = ('teardown',)
+        try_run(self, names)
+
     def _fixture_setup(self):
         """Set up transaction management, but skip real reset
         """
