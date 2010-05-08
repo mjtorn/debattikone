@@ -52,6 +52,9 @@ class StatefulTestCase(TestCase):
 class Test010Models(StatefulTestCase):
     fixtures = ['test_data.json']
 
+    class State:
+        pass
+
     def test_010_create_topic(self):
         topic = models.Topic()
 
@@ -60,7 +63,19 @@ class Test010Models(StatefulTestCase):
 
         topic.save()
 
-        self.topic = topic
+        self.State.topic = topic
+
+    def test_020_create_debate(self):
+        mjt = auth_models.User.objects.get(username='mjt')
+
+        debate = models.Debate()
+
+        debate.topic = self.State.topic
+        debate.user1 = mjt
+
+        debate.save()
+
+        self.State.debate = debate
 
 # EOF
 
