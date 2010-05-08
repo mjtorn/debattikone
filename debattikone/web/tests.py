@@ -51,6 +51,12 @@ class StatefulTestCase(TestCase):
             if hasattr(self, 'fixtures'):
                 call_command('loaddata', *self.fixtures, **{'verbosity': 0, 'commit': False, 'database': db})
 
+    def _fixture_teardown(self):
+        """Must not tear down recent commits, or it's not stateful!
+        """
+
+        return None
+
 class Test010Models(StatefulTestCase):
     fixtures = ['test_data.json']
 
