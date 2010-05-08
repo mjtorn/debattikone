@@ -4,6 +4,13 @@ from django.db import models
 
 from django.contrib.auth import models as auth_models
 
+class DebattikoneModelException(Exception):
+    pass
+
+
+class DebattikoneInvalidUserException(DebattikoneModelException):
+    pass
+
 # Create your models here.
 
 class Topic(models.Model):
@@ -20,6 +27,9 @@ class Debate(models.Model):
     topic = models.ForeignKey(Topic)
     user1 = models.ForeignKey(auth_models.User, related_name='user1')
     user2 = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='user2')
+
+    invited = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='invited')
+
     msg_limit = models.IntegerField(default=10)
 
     def can_participate(self, user):
@@ -31,6 +41,14 @@ class Debate(models.Model):
 
     def is_closed(self):
         return self.debatemessage_set.count() == self.msg_limit
+
+    def invite(self, inviter, invitee):
+        if inviter != self.user1:
+            raise DebattikoneInvalidUserException('You are not the creator')
+
+        self.invited = invitee
+
+        self.save()
 
 # EOF
 
