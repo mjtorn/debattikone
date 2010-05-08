@@ -25,10 +25,10 @@ class DebateMessage(models.Model):
 
 class Debate(models.Model):
     topic = models.ForeignKey(Topic)
-    user1 = models.ForeignKey(auth_models.User, related_name='user1')
-    user2 = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='user2')
+    user1 = models.ForeignKey(auth_models.User, related_name='debate_user1_set')
+    user2 = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='debate_user2_set')
 
-    invited = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='invited')
+    invited = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='debate_invited_set')
 
     msg_limit = models.IntegerField(default=10)
 
