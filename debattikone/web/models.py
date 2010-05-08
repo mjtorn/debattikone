@@ -18,8 +18,8 @@ class DebateMessage(models.Model):
 
 class Debate(models.Model):
     topic = models.ForeignKey(Topic)
-    user1 = models.ForeignKey(auth_models.User)
-    user2 = models.ForeignKey(auth_models.User, null=True, blank=True, default=None)
+    user1 = models.ForeignKey(auth_models.User, related_name='user1')
+    user2 = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='user2')
     msg_limit = models.IntegerField(default=10)
 
     def can_participate(self, user):
