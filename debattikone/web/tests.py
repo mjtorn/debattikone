@@ -171,5 +171,26 @@ class Test010Models(StatefulTestCase):
 
         self.State.other_debate.join(antagonist)
 
+    def test_040_housekeeping(self):
+        mjt = auth_models.User.objects.get(username='mjt')
+        antagonist = auth_models.User.objects.get(username='antagonist')
+        third = auth_models.User.objects.get(username='third')
+
+        count = models.Debate.objects.count()
+        exp_count = 2
+        assert count == exp_count, '%s != %s' % (count, exp_count)
+
+        count = mjt.debate_user1_set.count()
+        exp_count = 2
+        assert count == exp_count, '%s != %s' % (count, exp_count)
+
+        count = antagonist.debate_user2_set.count()
+        exp_count = 2
+        assert count == exp_count, '%s != %s' % (count, exp_count)
+
+        count = antagonist.debate_invited_set.count()
+        exp_count = 1
+        assert count == exp_count, '%s != %s' % (count, exp_count)
+
 # EOF
 
