@@ -83,13 +83,22 @@ class Test010Models(StatefulTestCase):
 
         assert not can_participate, 'Test case knows you are user1 here'
 
-    def test_022_test_participate_antagonist(self):
+    def test_022_test_participate_and_join_antagonist(self):
         mjt = auth_models.User.objects.get(username='mjt')
         antagonist = auth_models.User.objects.get(username='antagonist')
 
         can_participate = self.State.debate.can_participate(antagonist)
 
         assert can_participate, 'You are the other one, should be ok'
+
+        self.State.debate.user2 = antagonist
+
+    def test_023_test_participate_third(self):
+        third = auth_models.User.objects.get(username='third')
+
+        can_participate = self.State.debate.can_participate(third)
+
+        assert not can_participate, 'Debate has two users'
 
 # EOF
 
