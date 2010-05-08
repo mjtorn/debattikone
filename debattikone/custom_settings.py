@@ -13,5 +13,7 @@ TIME_ZONE = 'Europe/Helsinki'
 
 DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
+TEST_RUNNER = 'django_nose.run_tests'
+
 # EOF
 
