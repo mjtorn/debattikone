@@ -100,5 +100,26 @@ class Test010Models(StatefulTestCase):
 
         assert not can_participate, 'Debate has two users'
 
+    def test_030_create_other_debate(self):
+        mjt = auth_models.User.objects.get(username='mjt')
+
+        topic = models.Topic()
+
+        topic.title = 'Other test debate'
+        topic.summary = 'Summary for other test debate'
+
+        topic.save()
+
+        self.State.other_topic = topic
+
+        debate = models.Debate()
+
+        debate.topic = topic
+        debate.user1 = mjt
+
+        debate.save()
+
+        self.State.other_debate = debate
+
 # EOF
 
