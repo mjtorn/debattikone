@@ -1,5 +1,8 @@
 # vim: tabstop=4 expandtab autoindent shiftwidth=4 fileencoding=utf-8
 
+from django.contrib.auth import models as auth_models
+
+from django.core import mail
 from django.test import TestCase
 
 from nose.util import try_run
@@ -17,6 +20,7 @@ class StatefulTestCase(TestCase):
         """Set up transaction management, but skip real reset
         """
 
+        from django.core.management import call_command
         from django.test.testcases import connections_support_transactions
         from django.test.testcases import disable_transaction_methods
         from django.db import transaction, connections, DEFAULT_DB_ALIAS
@@ -39,6 +43,9 @@ class StatefulTestCase(TestCase):
         from django.contrib.sites.models import Site
         Site.objects.clear_cache()
 
+        for db in databases:
+            if hasattr(self, 'fixtures'):
+                call_command('loaddata', *self.fixtures, **{'verbosity': 0, 'commit': False, 'database': db})
 
 # EOF
 
