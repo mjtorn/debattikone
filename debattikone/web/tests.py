@@ -93,6 +93,8 @@ class Test010Models(StatefulTestCase):
 
         self.State.debate.user2 = antagonist
 
+        self.State.debate.save()
+
     def test_023_test_participate_third(self):
         third = auth_models.User.objects.get(username='third')
 
