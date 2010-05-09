@@ -90,6 +90,7 @@ class Debate(models.Model):
             len_closing = len(closing_messages)
 
             if len_opening < 2:
+                # User1 starts
                 if len_opening == 0 and self.user1 == user:
                     return 0
                 elif len_opening == 1 and self.user2 == user:
@@ -97,7 +98,28 @@ class Debate(models.Model):
                 return None
 
             if len_normal < self.msg_limit:
-                return 1
+                # Can not present first question out of order
+                if not len_normal and user != self.user1:
+                    return None
+                # user1 starts
+                elif not len_normal and user == self.user1:
+                    return 1
+                # One message means user2 replies
+                elif len_normal == 1:
+                    if normal_messages[-1].user != user:
+                        return 1
+                elif len_normal >= 2:
+                    # user1 asked and user2 replied, user2's turn
+                    if normal_messages[-2].user != normal_messages[-1].user:
+                        if normal_messages[-1].user == user:
+                            return 1
+
+                    # user2 replied, asked new question, user1's turn
+                    if normal_messages[-2].user == normal_messages[-1].user:
+                        if normal_messages[-1].user != user:
+                            return 1
+
+                return None
 
             if len_normal == self.msg_limit:
                 if len_closing < 3:
