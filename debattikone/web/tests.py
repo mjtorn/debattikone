@@ -219,5 +219,159 @@ class Test010Models(StatefulTestCase):
         exp_retval = None
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
+    def test_110_user2_tries_to_open(self):
+        """user1 has not opened the debate yet, so user2's can_send
+        must return None
+        """
+
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        retval = self.State.debate.can_send(antagonist)
+        exp_retval = None
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    def test_111_user1_opens(self):
+        """user1 opens the debate
+        """
+
+        mjt = auth_models.User.objects.get(username='mjt')
+
+        retval = self.State.debate.can_send(mjt)
+        exp_retval = 0
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+        self.State.debate.send(mjt, retval, 'user1 opening argument')
+
+    def test_112_user2_presents_open(self):
+        """user2 presents his opening argument
+        """
+
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        retval = self.State.debate.can_send(antagonist)
+        exp_retval = 0
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+        self.State.debate.send(antagonist, retval, 'user2 opening argument')
+
+        print [s.argument_type for s in self.State.debate.debatemessage_set.all()]
+
+    def test_113_user1_first_q(self):
+        """User 1 tests can_send, can send a normal argument
+        and thus presents the first question
+        """
+
+        mjt = auth_models.User.objects.get(username='mjt')
+
+        retval = self.State.debate.can_send(mjt)
+        exp_retval = 1
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+        self.State.debate.send(mjt, retval, 'user1 first question')
+
+    def test_114_user2_first_re(self):
+        """User 2 tests can_send, can send a normal, answers the
+        question
+        """
+
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        retval = self.State.debate.can_send(antagonist)
+        exp_retval = 1
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+        self.State.debate.send(antagonist, retval, 'user2 first re')
+
+    def test_115_user1_out_of_turn(self):
+        """User 1 tests can_send, sees can not send (user2's turn)
+        and thus does not.
+        """
+
+        mjt = auth_models.User.objects.get(username='mjt')
+
+        retval = self.State.debate.can_send(mjt)
+        exp_retval = None
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    def test_116_user2_first_q_and_user1_re(self):
+        """user2 asks first question
+        """
+
+        mjt = auth_models.User.objects.get(username='mjt')
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        # Finish first round
+        retval = self.State.debate.can_send(antagonist)
+        exp_retval = 1
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+        self.State.debate.send(antagonist, retval, 'user2 first q')
+
+        retval = self.State.debate.can_send(mjt)
+        exp_retval = 1
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+        self.State.debate.send(mjt, retval, 'user1 first re')
+
+        ## Now we should have two questions and two answers
+        messages = self.State.debate.debatemessage_set.all()
+        normal_messages = [m for m in messages if m.argument_type == 1]
+        assert len(normal_messages) == 4, '%d != 4 normals' % len(normal_messages)
+
+    def test_117_rest_of_the_debate(self):
+        """Play out the rest of the debate, as we now know no one
+        can speak out of turn
+        """
+
+        mjt = auth_models.User.objects.get(username='mjt')
+        antagonist = auth_models.User.objects.get(username='antagonist')
+
+        msg_limit = self.State.debate.msg_limit
+
+        messages = self.State.debate.debatemessage_set.all()
+        normal_messages = [m for m in messages if m.argument_type == 1]
+
+        # Symbolize page loads
+        i = 0
+        while True:
+            i += 1
+            messages = self.State.debate.debatemessage_set.all()
+            normal_messages = [m for m in messages if m.argument_type == 1]
+
+            if len(normal_messages) >= msg_limit:
+                break
+
+            # user1 asks question
+            retval = self.State.debate.can_send(mjt)
+            exp_retval = 1
+            assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+            self.State.debate.send(mjt, retval, 'user1 q')
+
+            # user2 replies
+            retval = self.State.debate.can_send(antagonist)
+            exp_retval = 1
+            assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+            self.State.debate.send(antagonist, retval, 'user2 re')
+
+            # asks question
+            retval = self.State.debate.can_send(antagonist)
+            exp_retval = 1
+            assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+            self.State.debate.send(antagonist, retval, 'user2 q')
+
+            # user1 replies
+            retval = self.State.debate.can_send(mjt)
+            exp_retval = 1
+            assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+            self.State.debate.send(mjt, retval, 'user1 re')
+
+        messages = self.State.debate.debatemessage_set.all()
+        count = len([m for m in messages if m.argument_type == 1])
+        assert count == msg_limit, '%s != %s' % (count, msg_limit)
+
 # EOF
 
