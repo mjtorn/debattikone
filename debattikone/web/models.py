@@ -73,12 +73,9 @@ class Debate(models.Model):
 
         self.save()
 
-    def join(self, user):
-        if self.can_participate(user):
-            self.user2 = user
-            self.save()
-        else:
-            raise DebattikoneInvalidUserException('Can not join')
+    def participate(self, user):
+        self.user2 = user
+        self.save()
 
 # EOF
 
