@@ -84,8 +84,12 @@ class Debate(models.Model):
             normal_messages = [m for m in messages if m.argument_type == 1]
             closing_messages = [m for m in messages if m.argument_type == 2]
 
-            if len(opening_messages) < 3:
-                return 0
+            if len(opening_messages) < 2:
+                if len(opening_messages) == 0 and self.user1 == user:
+                    return 0
+                elif len(opening_messages) == 1 and self.user2 == user:
+                    return 0
+                return None
 
             if len(normal_messages) < self.msg_limit:
                 return 1
