@@ -171,7 +171,27 @@ class Test010Models(StatefulTestCase):
 
         self.State.other_debate.join(antagonist)
 
-    def test_040_housekeeping(self):
+    def test_040_create_duplicate_topic(self):
+        topic = models.Topic()
+
+        topic.title = 'Test debate'
+        topic.summary = 'Summary for test debate'
+
+        topic.save()
+
+        self.State.topic = topic
+
+    def test_041_create_other_duplicate_topic(self):
+        topic = models.Topic()
+
+        topic.title = 'Test debate'
+        topic.summary = 'Summary for test debate'
+
+        topic.save()
+
+        self.State.topic = topic
+
+    def test_050_housekeeping(self):
         mjt = auth_models.User.objects.get(username='mjt')
         antagonist = auth_models.User.objects.get(username='antagonist')
         third = auth_models.User.objects.get(username='third')
@@ -191,6 +211,12 @@ class Test010Models(StatefulTestCase):
         count = antagonist.debate_invited_set.count()
         exp_count = 1
         assert count == exp_count, '%s != %s' % (count, exp_count)
+
+        count = models.Topic.objects.count()
+        exp_count = 4
+        assert count == exp_count, '%s != %s' % (count, exp_count)
+
+        print [t.slug for t in models.Topic.objects.all()]
 
 # EOF
 
