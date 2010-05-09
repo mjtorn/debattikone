@@ -89,7 +89,7 @@ class Test010Models(StatefulTestCase):
 
         assert not can_participate, 'Test case knows you are user1 here'
 
-    def test_022_test_participate_and_join_antagonist(self):
+    def test_022_test_participate_and_participate_antagonist(self):
         mjt = auth_models.User.objects.get(username='mjt')
         antagonist = auth_models.User.objects.get(username='antagonist')
 
@@ -97,7 +97,7 @@ class Test010Models(StatefulTestCase):
 
         assert can_participate, 'You are the other one, should be ok'
 
-        self.State.debate.join(antagonist)
+        self.State.debate.participate(antagonist)
 
         self.State.debate.save()
 
@@ -154,22 +154,22 @@ class Test010Models(StatefulTestCase):
 
         self.State.other_debate.invite(mjt, antagonist)
 
-    def test_034_fail_third_join(self):
+    def test_034_fail_third_participate(self):
         third = auth_models.User.objects.get(username='third')
 
         can_participate = self.State.other_debate.can_participate(third)
         assert not can_participate, 'antagonist was invited, not you'
 
         try:
-            self.State.other_debate.join(third)
+            self.State.other_debate.participate(third)
             raise AssertionError('You were not invited')
         except models.DebattikoneInvalidUserException, e:
             print 'Caught %s' % e
 
-    def test_035_antagonist_join(self):
+    def test_035_antagonist_participate(self):
         antagonist = auth_models.User.objects.get(username='antagonist')
 
-        self.State.other_debate.join(antagonist)
+        self.State.other_debate.participate(antagonist)
 
     def test_040_create_duplicate_topic(self):
         topic = models.Topic()
