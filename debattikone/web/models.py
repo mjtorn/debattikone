@@ -42,7 +42,8 @@ class Debate(models.Model):
 
     invited = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='debate_invited_set')
 
-    msg_limit = models.IntegerField(default=10)
+    # One round is 4 messages, this is 3 rounds
+    msg_limit = models.IntegerField(default=12)
 
     def can_invite(self, inviter, invitee):
         if inviter != self.user1:
