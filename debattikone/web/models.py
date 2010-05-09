@@ -49,6 +49,15 @@ class Debate(models.Model):
 
     msg_limit = models.IntegerField(default=10)
 
+    def can_invite(self, inviter, invitee):
+        if inviter != self.user1:
+            return False
+
+        if invitee == self.user1:
+            return False
+
+        return True
+
     def can_participate(self, user):
         if self.user1 == user or self.user2 == user:
             return False
@@ -71,6 +80,8 @@ class Debate(models.Model):
 
         self.invited = invitee
 
+    def invite(self, user):
+        self.invited = user
         self.save()
 
     def participate(self, user):
