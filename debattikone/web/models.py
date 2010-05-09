@@ -6,13 +6,6 @@ from django.contrib.auth import models as auth_models
 
 from django.template.defaultfilters import slugify
 
-class DebattikoneModelException(Exception):
-    pass
-
-
-class DebattikoneInvalidUserException(DebattikoneModelException):
-    pass
-
 # Create your models here.
 
 class Topic(models.Model):
