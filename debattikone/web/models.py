@@ -4,6 +4,8 @@ from django.db import models
 
 from django.contrib.auth import models as auth_models
 
+from django.template.defaultfilters import slugify
+
 class DebattikoneModelException(Exception):
     pass
 
@@ -16,6 +18,21 @@ class DebattikoneInvalidUserException(DebattikoneModelException):
 class Topic(models.Model):
     title = models.CharField(max_length=64)
     summary = models.CharField(max_length=1025)
+    slug = models.SlugField(unique=True)
+
+    def save(self):
+        slug = slugify(self.title)
+        if not Topic.objects.filter(slug=slug).exclude(id=self.id).count():
+            self.slug = slug
+            return super(Topic, self).save()
+
+        i = 1
+        while True:
+            slug = slugify('%s %d' % (self.title, i))
+            if not Topic.objects.filter(slug=slug).exclude(id=self.id).count():
+                self.slug = slug
+                return super(Topic, self).save()
+            i += 1
 
 
 class DebateMessage(models.Model):
