@@ -31,6 +31,7 @@ class Topic(models.Model):
 class DebateMessage(models.Model):
     user = models.ForeignKey(auth_models.User)
     debate = models.ForeignKey("Debate")
+    argument_type = models.IntegerField(choices=((0, 'Opening argument'), (1, 'Normal argument'), (2, 'Closing argument')))
 
 
 class Debate(models.Model):
@@ -61,17 +62,41 @@ class Debate(models.Model):
         if self.user2 is None and self.invited == user:
             return True
 
+    def can_send(self, user):
+        """Return what type of message user can send
+        None - nothing
+        0 - opening
+        1 - normal
+        2 - closing
+        """
+
+        # Users must be set
+        if self.user1 is None or self.user2 is None:
+            return None
+
+        # Users must be proper
+        if self.user1 == user or self.user2 == user:
+            messages = self.debatemessage_set.all()
+
+            # Makes assumptions about numbers :(
+            opening_messages = [m for m in messages if m.argument_type == 0]
+            normal_messages = [m for m in messages if m.argument_type == 1]
+            closing_messages = [m for m in messages if m.argument_type == 2]
+
+            if len(opening_messages) < 3:
+                return 0
+
+            if len(normal_messages) < self.msg_limit:
+                return 1
+
+            if len(normal_messages) == self.msg_limit:
+                if len(closing_messages) < 3:
+                    return 2
+
+        return None
+
     def is_closed(self):
         return self.debatemessage_set.count() == self.msg_limit
-
-    def invite(self, inviter, invitee):
-        if inviter != self.user1:
-            raise DebattikoneInvalidUserException('You are not the creator')
-
-        if invitee == self.user1:
-            raise DebattikoneInvalidUserException('Can not invite self')
-
-        self.invited = invitee
 
     def invite(self, user):
         self.invited = user
