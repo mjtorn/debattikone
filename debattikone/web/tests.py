@@ -133,38 +133,32 @@ class Test010Models(StatefulTestCase):
         mjt = auth_models.User.objects.get(username='mjt')
         antagonist = auth_models.User.objects.get(username='antagonist')
 
-        try:
-            self.State.other_debate.invite(antagonist, mjt)
-            raise AssertionError('Should have failed')
-        except models.DebattikoneInvalidUserException, e:
-            print 'Caught %s' % e
+        retval = self.State.other_debate.can_invite(antagonist, mjt)
+        exp_retval = False
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     def test_032_fail_inviting_self(self):
         mjt = auth_models.User.objects.get(username='mjt')
 
-        try:
-            self.State.other_debate.invite(mjt, mjt)
-            raise AssertionError('Should have failed')
-        except models.DebattikoneInvalidUserException, e:
-            print 'Caught %s' % e
+        retval = self.State.other_debate.can_invite(mjt, mjt)
+        exp_retval = False
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     def test_033_invite_antagonist(self):
         mjt = auth_models.User.objects.get(username='mjt')
         antagonist = auth_models.User.objects.get(username='antagonist')
 
-        self.State.other_debate.invite(mjt, antagonist)
+        retval = self.State.other_debate.can_invite(mjt, antagonist)
+        exp_retval = True
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+        self.State.other_debate.invite(antagonist)
 
     def test_034_fail_third_participate(self):
         third = auth_models.User.objects.get(username='third')
 
         can_participate = self.State.other_debate.can_participate(third)
         assert not can_participate, 'antagonist was invited, not you'
-
-        try:
-            self.State.other_debate.participate(third)
-            raise AssertionError('You were not invited')
-        except models.DebattikoneInvalidUserException, e:
-            print 'Caught %s' % e
 
     def test_035_antagonist_participate(self):
         antagonist = auth_models.User.objects.get(username='antagonist')
