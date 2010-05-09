@@ -107,5 +107,17 @@ class Debate(models.Model):
         self.user2 = user
         self.save()
 
+    def send(self, user, argument_type, argument):
+        msg = DebateMessage()
+
+        msg.user = user
+        msg.debate = self
+        msg.argument_type = argument_type
+        msg.argument = argument
+
+        msg.save()
+
+        return msg
+
 # EOF
 
