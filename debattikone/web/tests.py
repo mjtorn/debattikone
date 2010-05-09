@@ -212,5 +212,12 @@ class Test010Models(StatefulTestCase):
 
         print [t.slug for t in models.Topic.objects.all()]
 
+    def test_100_third_can_not_send(self):
+        third = auth_models.User.objects.get(username='third')
+
+        retval = self.State.debate.can_send(third)
+        exp_retval = None
+        assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
 # EOF
 
