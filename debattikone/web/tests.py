@@ -373,5 +373,18 @@ class Test010Models(StatefulTestCase):
         count = len([m for m in messages if m.argument_type == 1])
         assert count == msg_limit, '%s != %s' % (count, msg_limit)
 
+    def test_200_hax_other_debate(self):
+        """This would never happen irl, but edit second debate's msg_limit
+        """
+
+        try:
+            self.State.other_debate.msg_limit = 11
+            raise AssertionError('Should be multiplier of 4')
+        except ValueError, e:
+            print 'Caught "%s"' % e
+
+        self.State.other_debate.msg_limit = 12
+        self.State.other_debate.save()
+
 # EOF
 
