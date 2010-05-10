@@ -43,7 +43,15 @@ class Debate(models.Model):
     invited = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='debate_invited_set')
 
     # One round is 4 messages, this is 3 rounds
-    msg_limit = models.IntegerField(default=12)
+    _msg_limit = models.IntegerField(default=12, db_column='msg_limit')
+    def get_msg_limit(self):
+        return self._msg_limit
+    def set_msg_limit(self, value):
+        if not isinstance(value, int):
+            raise TypeError('Need int for msg_limit')
+        if value % 4 != 0:
+            raise ValueError('Must be multiplier of 4')
+    msg_limit = property(get_msg_limit, set_msg_limit)
 
     def can_invite(self, inviter, invitee):
         if inviter != self.user1:
