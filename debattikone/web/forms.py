@@ -35,5 +35,15 @@ class RegisterForm(forms.Form):
 
         return user.save()
 
+
+@autostrip
+class NewTopicForm(forms.Form):
+    topic = forms.fields.CharField(max_length=64, error_messages=REG_ERRS)
+    summary = forms.fields.CharField(max_length=1024, widget=forms.widgets.Textarea(), error_messages=REG_ERRS)
+
+    def save(self):
+        return models.Topic.objects.create(topic=self.cleaned_data['topic'], summary=self.cleaned_data['summary'])
+
+
 # EOF
 
