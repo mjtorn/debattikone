@@ -57,37 +57,6 @@ class StatefulTestCase(TestCase):
 
         return None
 
-    def __del__(self):
-        from django.core.management import call_command
-        from django.db import connections, DEFAULT_DB_ALIAS
-        if getattr(self, 'multi_db', False):
-            databases = connections
-        else:
-            databases = [DEFAULT_DB_ALIAS]
-
-        obs = dir(models)
-        obs = [o for o in obs if not '__' in o]
-        obs = [getattr(models, o) for o in obs]
-
-        real_obs = []
-        for o in obs:
-            try:
-                if issubclass(o, models.models.Model):
-                    real_obs.append(o)
-            except TypeError:
-                pass
-
-        tables = [o._meta.db_table for o in real_obs]
-        for conn in connections.all():
-            cursor = conn.cursor()
-            for table in tables:
-                cursor.execute('DELETE FROM %s' % table)
-            cursor.connection.commit()
-
-        assert models.Debate.objects.count() == 0
-
-
-
 class Test010Models(StatefulTestCase):
     fixtures = ['test_data.json']
 
