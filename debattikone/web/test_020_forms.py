@@ -78,7 +78,7 @@ def test_015_reg_third():
 
 def test_100_fail_new_topic():
     data = {
-        'topic': 'a' * 65,
+        'title': 'a' * 65,
         'summary': 'First summary',
     }
 
@@ -87,7 +87,7 @@ def test_100_fail_new_topic():
 
 def test_101_fail_new_topic_summary():
     data = {
-        'topic': 'First topic',
+        'title': 'First topic',
         'summary': 'a' * 1065
     }
 
@@ -96,7 +96,7 @@ def test_101_fail_new_topic_summary():
 
 def test_102_fail_new_topic_no_summary():
     data = {
-        'topic': 'First topic',
+        'title': 'First topic',
     }
 
     form = forms.NewTopicForm(data)
@@ -104,16 +104,17 @@ def test_102_fail_new_topic_no_summary():
 
 def test_103_success_new_topic():
     data = {
-        'topic': 'First topic',
+        'title': 'First topic',
         'summary': 'First summary',
     }
 
     form = forms.NewTopicForm(data)
     assert form.is_valid(), form.errors
+    form.save()
 
 def test_104_success_dupe_topic():
     data = {
-        'topic': 'First topic',
+        'title': 'First topic',
         'summary': 'First summary',
     }
 
