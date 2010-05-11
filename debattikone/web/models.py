@@ -42,6 +42,8 @@ class Debate(models.Model):
 
     invited = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='debate_invited_set')
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     # One round is 4 messages, this is 3 rounds
     _msg_limit = models.IntegerField(default=12, db_column='msg_limit')
     def get_msg_limit(self):
