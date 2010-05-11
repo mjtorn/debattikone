@@ -11,6 +11,7 @@ from debattikone.web import models
 REG_ERRS = {
     'required': 'Tämä tieto tarvitaan',
     'invalid': 'Virheellinen tieto',
+    'invalid_choice': 'Tämä vaihtoehto ei ole yksi annetuista',
     'max_length': 'Korkeintaan %(limit_value)d merkkiä, kiitos (Nyt on %(show_value)d)',
 }
 
@@ -50,6 +51,34 @@ class NewTopicForm(forms.Form):
         topic.save()
 
         return topic
+
+
+@autostrip
+class NewDebateForm(forms.Form):
+    topic = forms.models.ModelChoiceField(models.Topic.objects.all().order_by('-id'), empty_label=None, error_messages=REG_ERRS)
+    invited = forms.models.ModelChoiceField(auth_models.User.objects.all().order_by('username'), required=False, error_messages=REG_ERRS)
+
+    def clean(self):
+        if not self.cleaned_data.has_key('topic'):
+            raise forms.ValidationError('Jokin kenttä sisältää virheellisen arvon')
+
+        debate = get_object_or_None(models.Debate, topic=self.cleaned_data['topic'], invited=self.cleaned_data.get('invited', None))
+
+        if debate is not None:
+            raise forms.ValidationError('Sinulla on jo tällainen debatti')
+
+        return self.cleaned_data
+
+    def save(self):
+        debate = models.Debate()
+
+        debate.topic = self.cleaned_data['topic']
+        debate.invited = self.cleaned_data['invited']
+        debate.user1 = self.cleaned_data['user']
+
+        debate.save()
+
+        return debate
 
 # EOF
 
