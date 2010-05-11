@@ -6,6 +6,7 @@ from annoying.decorators import autostrip
 from annoying.functions import get_object_or_None
 
 from django import forms
+from debattikone.web import models
 
 REG_ERRS = {
     'required': 'Tämä tieto tarvitaan',
@@ -38,12 +39,17 @@ class RegisterForm(forms.Form):
 
 @autostrip
 class NewTopicForm(forms.Form):
-    topic = forms.fields.CharField(max_length=64, error_messages=REG_ERRS)
+    title = forms.fields.CharField(max_length=64, error_messages=REG_ERRS)
     summary = forms.fields.CharField(max_length=1024, widget=forms.widgets.Textarea(), error_messages=REG_ERRS)
 
     def save(self):
-        return models.Topic.objects.create(topic=self.cleaned_data['topic'], summary=self.cleaned_data['summary'])
+        topic = models.Topic()
+        topic.title=self.cleaned_data['title']
+        topic.summary=self.cleaned_data['summary']
 
+        topic.save()
+
+        return topic
 
 # EOF
 
