@@ -76,6 +76,50 @@ def test_015_reg_third():
     assert form.is_valid(), form.errors
     form.save()
 
+def test_100_fail_new_topic():
+    data = {
+        'topic': 'a' * 65,
+        'summary': 'First summary',
+    }
+
+    form = forms.NewTopicForm(data)
+    assert not form.is_valid(), 'Should fail'
+
+def test_101_fail_new_topic_summary():
+    data = {
+        'topic': 'First topic',
+        'summary': 'a' * 1065
+    }
+
+    form = forms.NewTopicForm(data)
+    assert not form.is_valid(), 'Should fail'
+
+def test_102_fail_new_topic_no_summary():
+    data = {
+        'topic': 'First topic',
+    }
+
+    form = forms.NewTopicForm(data)
+    assert not form.is_valid(), 'Should fail'
+
+def test_103_success_new_topic():
+    data = {
+        'topic': 'First topic',
+        'summary': 'First summary',
+    }
+
+    form = forms.NewTopicForm(data)
+    assert form.is_valid(), form.errors
+
+def test_104_success_dupe_topic():
+    data = {
+        'topic': 'First topic',
+        'summary': 'First summary',
+    }
+
+    form = forms.NewTopicForm(data)
+    assert form.is_valid(), form.errors
+
 def teardown():
     for db in connections:
         call_command('flush', verbosity=0, interactive=False, database=db)
