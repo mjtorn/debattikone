@@ -10,7 +10,7 @@ from django.template.defaultfilters import slugify
 
 class Topic(models.Model):
     title = models.CharField(max_length=64)
-    summary = models.CharField(max_length=1025)
+    summary = models.CharField(max_length=1024)
     slug = models.SlugField(unique=True)
 
     def save(self):
