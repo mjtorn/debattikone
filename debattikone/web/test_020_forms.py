@@ -2,7 +2,9 @@
 
 from django.core.management import call_command
 
-from debattikone.web import forms
+from django.contrib.auth import models as auth_models
+
+from debattikone.web import forms, models
 
 from django.db import connections
 
@@ -120,6 +122,43 @@ def test_104_success_dupe_topic():
 
     form = forms.NewTopicForm(data)
     assert form.is_valid(), form.errors
+    form.save()
+
+def test_200_fail_new_debate_topic():
+    topics = models.Topic.objects.all().order_by('-id')
+    topic = topics[0]
+    topic_id = topic.id + 1
+
+    mjt = auth_models.User.objects.get(username='mjt')
+
+    globals()['topic'] = topic
+    globals()['mjt'] = mjt
+
+    data = {
+        'topic': topic_id,
+    }
+    form = forms.NewDebateForm(data)
+    assert not form.is_valid(), 'Should fail'
+    print form.errors
+
+def test_201_success_new_debate_no_invite():
+    data = {
+        'topic': topic.id,
+    }
+
+    form = forms.NewDebateForm(data)
+    assert form.is_valid(), form.errors
+    form.cleaned_data['user'] = mjt
+    form.save()
+
+def test_201_fail_duplicate_debate_no_invite():
+    data = {
+        'topic': topic.id,
+    }
+
+    form = forms.NewDebateForm(data)
+    assert not form.is_valid(), 'Should fail'
+    print form.errors
 
 def teardown():
     for db in connections:
