@@ -2,12 +2,14 @@
 
 from django.conf.urls.defaults import *
 
-from debattikone.web import views
+from debattikone.web import views, ajax_views
 
 from django.conf import settings
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^debate/(?P<debate_id>\d+)/(?P<slug>\w+)/follow', ajax_views.follow, name='follow_debate'),
+    url(r'^debate/(?P<debate_id>\d+)/(?P<slug>\w+)/unfollow', ajax_views.unfollow, name='unfollow_debate'),
 )
 
 if settings.DEBUG:
