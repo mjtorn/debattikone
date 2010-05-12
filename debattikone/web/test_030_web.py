@@ -8,9 +8,14 @@ from django.db import connections
 
 from django.test import Client
 
+import simplejson
+
 fixtures = ['test_data.json']
 
 c = Client()
+
+def unjson(data):
+    return simplejson.loads(data.content)
 
 def setup():
     for db in connections:
