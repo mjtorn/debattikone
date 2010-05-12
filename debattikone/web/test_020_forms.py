@@ -160,6 +160,20 @@ def test_201_fail_duplicate_debate_no_invite():
     assert not form.is_valid(), 'Should fail'
     print form.errors
 
+def test_202_success_new_debate_invite():
+    antagonist = auth_models.User.objects.get(username='antagonist')
+    globals()['antagonist'] = antagonist
+
+    data = {
+        'topic': topic.id,
+        'invited': antagonist.id,
+    }
+
+    form = forms.NewDebateForm(data)
+    assert form.is_valid(), form.errors
+    form.cleaned_data['user'] = mjt
+    globals()['invite_debate'] = form.save()
+
 def teardown():
     for db in connections:
         call_command('flush', verbosity=0, interactive=False, database=db)
