@@ -22,8 +22,12 @@ def setup():
         if globals().has_key('fixtures'):
             call_command('loaddata', *globals()['fixtures'], **{'verbosity': 0, 'commit': False, 'database': db})
 
-def test_010_test_follow():
-    c.get(reverse('follow_debate', args=('1', 'x')))
+def test_010_fail_test_follow_no_login():
+    data = c.get(reverse('follow_debate', args=('1', 'x')))
+    data = unjson(data)
+
+    assert not data['success'], 'Should fail, not logged in'
+    assert data['msg'] == 'nologin', 'Should fail, not logged in'
 
 def teardown():
     for db in connections:
