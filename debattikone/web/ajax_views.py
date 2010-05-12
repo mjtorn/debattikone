@@ -8,7 +8,10 @@ from debattikone.web import models
 def handle_follow(request, debate_id, slug, func_name):
     debate = get_object_or_None(models.Debate, id=debate_id)
 
-    if debate is None:
+    if request.user.id is None:
+        success = False
+        msg = 'nologin'
+    elif debate is None:
         success = False
         msg = 'notfound'
     else:
@@ -20,7 +23,7 @@ def handle_follow(request, debate_id, slug, func_name):
 
     return {
         'success': success,
-        'msg': 'ok',
+        'msg': msg,
     }
     
 @ajax_request
