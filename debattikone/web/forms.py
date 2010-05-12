@@ -64,9 +64,9 @@ class NewDebateForm(forms.Form):
         if not self.cleaned_data.has_key('topic'):
             raise forms.ValidationError('Jokin kenttä sisältää virheellisen arvon')
 
-        from django.db.models import F
         invite_random = self.data.get('invite_random', False)
         if invite_random:
+            from django.db.models import F
             user = self.data['user']
             invited = auth_models.User.objects.all().order_by('?')
             invited = invited.exclude(id=user.id)
