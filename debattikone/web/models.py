@@ -42,6 +42,8 @@ class Debate(models.Model):
 
     invited = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, related_name='debate_invited_set')
 
+    follower = models.ManyToManyField(auth_models.User)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     # One round is 4 messages, this is 3 rounds
