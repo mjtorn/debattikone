@@ -58,14 +58,34 @@ class NewDebateForm(forms.Form):
     topic = forms.models.ModelChoiceField(models.Topic.objects.all().order_by('-id'), empty_label=None, error_messages=REG_ERRS)
     invited = forms.models.ModelChoiceField(auth_models.User.objects.all().order_by('username'), required=False, error_messages=REG_ERRS)
 
+    invite_random = forms.fields.BooleanField(required=False)
+
     def clean(self):
         if not self.cleaned_data.has_key('topic'):
             raise forms.ValidationError('Jokin kenttä sisältää virheellisen arvon')
 
-        debate = get_object_or_None(models.Debate, topic=self.cleaned_data['topic'], invited=self.cleaned_data.get('invited', None))
+        from django.db.models import F
+        invite_random = self.data.get('invite_random', False)
+        if invite_random:
+            user = self.data['user']
+            invited = auth_models.User.objects.all().order_by('?')
+            invited = invited.exclude(id=user.id)
+            invited = invited.exclude(debate_invited_set__invited__username=F('username'))
+            if invited:
+                invited = invited[0]
+                self.cleaned_data['invited'] = invited
+            else:
+                raise forms.ValidationError('Satunnaista vastapuolta ei löydetty')
+        else:
+            invited = self.cleaned_data.get('invited', None)
+
+        debate = get_object_or_None(models.Debate, topic=self.cleaned_data['topic'], invited=invited)
 
         if debate is not None:
-            raise forms.ValidationError('Sinulla on jo tällainen debatti')
+            if invite_random:
+                raise forms.ValidationError('Satunnaista vastapuolta ei löydetty')
+            else:
+                raise forms.ValidationError('Sinulla on jo tällainen debatti')
 
         return self.cleaned_data
 
