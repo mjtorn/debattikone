@@ -174,6 +174,30 @@ def test_202_success_new_debate_invite():
     form.cleaned_data['user'] = mjt
     globals()['invite_debate'] = form.save()
 
+def test_203_success_new_debate_invite_random():
+    data = {
+        'topic': topic.id,
+        'invite_random': True,
+        'user': mjt,
+    }
+
+    form = forms.NewDebateForm(data)
+    assert form.is_valid(), form.errors
+    form.cleaned_data['user'] = mjt
+    form.save()
+
+    del form
+
+def test_204_fail_new_debate_no_more_randoms():
+    data = {
+        'topic': topic.id,
+        'invite_random': True,
+        'user': mjt,
+    }
+
+    form = forms.NewDebateForm(data)
+    assert not form.is_valid(), 'Should have no more randoms'
+
 def teardown():
     for db in connections:
         call_command('flush', verbosity=0, interactive=False, database=db)
