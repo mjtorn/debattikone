@@ -198,9 +198,10 @@ def test_204_fail_new_debate_no_more_randoms():
     form = forms.NewDebateForm(data)
     assert not form.is_valid(), 'Should have no more randoms'
 
-def teardown():
-    for db in connections:
-        call_command('flush', verbosity=0, interactive=False, database=db)
+## Until we have good view tests
+#def teardown():
+#    for db in connections:
+#        call_command('flush', verbosity=0, interactive=False, database=db)
 
 # EOF
 
