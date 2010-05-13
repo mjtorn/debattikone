@@ -39,6 +39,20 @@ class RegisterForm(forms.Form):
 
 
 @autostrip
+class LoginForm(forms.Form):
+    l_username = forms.fields.CharField(max_length=32, error_messages=REG_ERRS)
+    l_password = forms.fields.CharField(widget=forms.widgets.PasswordInput())
+
+    def clean(self):
+        user = get_object_or_None(auth_models.User, username=self.cleaned_data['l_username'])
+
+        if user is None:
+            raise forms.ValidationError('Virheellinen käyttäjätunnus')
+
+        self.cleaned_data['user'] = user
+        return self.cleaned_data
+
+@autostrip
 class NewTopicForm(forms.Form):
     title = forms.fields.CharField(max_length=64, error_messages=REG_ERRS)
     summary = forms.fields.CharField(max_length=1024, widget=forms.widgets.Textarea(), error_messages=REG_ERRS)
