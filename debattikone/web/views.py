@@ -53,10 +53,27 @@ def index(request):
     return render_login('index.html', req_ctx)
 
 def debate(request, debate_id, slug):
+    debate = get_object_or_404(models.Debate, id=debate_id)
+
+    data = request.POST.copy() or None
+
+    debate_message_form = forms.DebateMessageForm(data)
+    if debate_message_form.is_bound:
+        debate_message_form.data['debate'] = debate
+        debate_message_form.data['user'] = request.user
+
+        if debate_message_form.is_valid():
+            debate_message_form.save()
+
+            return HttpResponseReload(request)
+        # For debug purposes
+        else:
+            print debate_message_form.errors
+
     context = {
     }
     req_ctx = RequestContext(request, context)
-    return render_login('index.html', req_ctx)
+    return render_login('debate.html', req_ctx)
 
 def participate(request, debate_id, slug):
     debate = get_object_or_404(models.Debate, id=debate_id)
