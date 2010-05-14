@@ -115,6 +115,7 @@ class NewDebateForm(forms.Form):
         return debate
 
 
+@autostrip
 class DebateMessageForm(forms.Form):
     message = forms.fields.CharField(widget=forms.widgets.Textarea())
 
