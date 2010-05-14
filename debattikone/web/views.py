@@ -48,5 +48,11 @@ def index(request):
     req_ctx = RequestContext(request, context)
     return render_login('index.html', req_ctx)
 
+def debate(request, debate_id, slug):
+    context = {
+    }
+    req_ctx = RequestContext(request, context)
+    return render_login('index.html', req_ctx)
+
 # EOF
 
