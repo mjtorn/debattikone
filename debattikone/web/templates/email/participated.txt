@@ -1,0 +1,9 @@
+Käyttäjä {{ user2.username }} otti haasteen vastaan Debattikoneen aiheella
+{{ topic.title }}.
+
+Debattia käydään osoitteessa
+http://debattikone.fi{{ uri }}
+
+-- 
+debattikone
+
