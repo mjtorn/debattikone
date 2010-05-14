@@ -209,6 +209,11 @@ def test_112_user2_presents_open():
 
     print [s.argument_type for s in debate.debatemessage_set.all()]
 
+    ## Also fail having antagonist trying to send
+    retval = debate.can_send(antagonist)
+    exp_retval = None
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
 def test_113_user1_first_q():
     """User 1 tests can_send, can send a normal argument
     and thus presents the first question
