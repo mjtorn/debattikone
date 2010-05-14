@@ -111,11 +111,20 @@ def test_011_participate():
     c.get(reverse('debate', args=(d.id, d.topic.slug)))
 
     # Participate
-    c.get(reverse('participate', args=(d.id, d.topic.slug)))
+    data = c.get(reverse('participate', args=(d.id, d.topic.slug)))
+    data = unjson(data)
+
+    assert data['success'], data
 
     retval = len(mail.outbox)
     exp_retval = 1
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    # Accidentally try to participate again
+    data = c.get(reverse('participate', args=(d.id, d.topic.slug)))
+    data = unjson(data)
+
+    assert not data['success'], 'Should fail: %s' % data
 
 def teardown():
     for db in connections:
