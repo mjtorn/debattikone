@@ -157,7 +157,7 @@ class Debate(models.Model):
         self.user2 = user
         self.save()
 
-        # TODO: send email
+        self.email_participate()
 
     def send(self, user, argument_type, argument):
         msg = DebateMessage()
@@ -181,6 +181,16 @@ class Debate(models.Model):
         content = render_to_string('email/invited.txt', ctx)
         subject = '[debattikone] Kutsu: %s' % self.topic.title
         mail.send_mail(subject, content, 'debattikone@debattikone.fi', (self.invited.email,))
+
+    def email_participate(self):
+        ctx = {
+            'topic': self.topic,
+            'user2': self.user2,
+            'uri': reverse('debate', args=(self.id, self.topic.slug)),
+        }
+        content = render_to_string('email/participated.txt', ctx)
+        subject = '[debattikone] %s osallistui aiheeseen %s' % (self.user2.username, self.topic.title)
+        mail.send_mail(subject, content, 'debattikone@debattikone.fi', (self.user1.email,))
 
 # EOF
 
