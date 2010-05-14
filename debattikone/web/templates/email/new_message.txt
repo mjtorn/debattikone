@@ -1,0 +1,12 @@
+Käyttäjä {{ user.username }} lähetti viestin aiheeseen {{ topic.title }}.
+
+=== VIESTI ===
+{{ msg.argument }}
+=== LOPPUU ===
+
+Debattia käydään osoitteessa
+http://debattikone.fi{{ uri }}
+
+-- 
+debattikone
+
