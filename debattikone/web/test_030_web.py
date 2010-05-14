@@ -164,8 +164,14 @@ def test_012_open():
     retval = res.status_code
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
+    # Database check
     exp_retval = 1
     retval = debate.debatemessage_set.count()
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    # Email check
+    retval = len(mail.outbox)
+    exp_retval = 2
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def teardown():
