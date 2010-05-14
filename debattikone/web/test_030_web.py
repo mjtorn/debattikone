@@ -4,9 +4,15 @@ from django.core.management import call_command
 
 from django.core.urlresolvers import reverse
 
+from django.contrib.auth import models as auth_models
+
+from django.core import mail
+
 from django.db import connections
 
 from django.test import Client
+
+from debattikone.web import models
 
 import simplejson
 
@@ -60,6 +66,13 @@ def test_012_login_bad_name():
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
 def test_013_login_ok():
+    """antagonist finally logs in
+    """
+
+    # Set here, not knowing a better place
+    antagonist = auth_models.User.objects.get(username='antagonist')
+    globals()['antagonist'] = antagonist
+
     username = 'antagonist'
     password = 'test_case_password'
 
@@ -75,11 +88,34 @@ def test_013_login_ok():
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
 def test_010_test_follow():
+    """antagonist loads the front page, the first debate, and follows
+    """
+
+    c.get(reverse('index'))
+    c.get(reverse('debate', args=('1', 'x')))
+
     data = c.get(reverse('follow_debate', args=('1', 'x')))
     data = unjson(data)
 
     assert data['success'], data
     assert data['msg'] == 'ok', data
+
+def test_011_participate():
+    """antagonist participates in the debate he was invited to
+    """
+
+    ## Get the correct debate here
+    d = models.Debate.objects.filter(invited=antagonist).select_related(depth=1)[0]
+
+    # Load page
+    c.get(reverse('debate', args=(d.id, d.topic.slug)))
+
+    # Participate
+    c.get(reverse('participate', args=(d.id, d.topic.slug)))
+
+    retval = len(mail.outbox)
+    exp_retval = 1
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def teardown():
     for db in connections:
