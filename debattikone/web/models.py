@@ -2,9 +2,14 @@
 
 from django.db import models
 
+from django.core import mail
+from django.core.urlresolvers import reverse
+
 from django.contrib.auth import models as auth_models
 
 from django.template.defaultfilters import slugify
+
+from django.template.loader import render_to_string
 
 # Create your models here.
 
@@ -146,9 +151,13 @@ class Debate(models.Model):
         self.invited = user
         self.save()
 
+        self.email_invite()
+
     def participate(self, user):
         self.user2 = user
         self.save()
+
+        # TODO: send email
 
     def send(self, user, argument_type, argument):
         msg = DebateMessage()
@@ -161,6 +170,17 @@ class Debate(models.Model):
         msg.save()
 
         return msg
+
+    ## Email section
+    def email_invite(self):
+        ctx = {
+            'topic': self.topic,
+            'user1': self.user1,
+            'uri': reverse('debate', args=(self.id, self.topic.slug)),
+        }
+        content = render_to_string('email/invited.txt', ctx)
+        subject = '[debattikone] Kutsu: %s' % self.topic.title
+        mail.send_mail(subject, content, 'debattikone@debattikone.fi', (self.invited.email,))
 
 # EOF
 
