@@ -107,10 +107,10 @@ class Debate(models.Model):
             len_closing = len(closing_messages)
 
             if len_opening < 2:
-                # User1 starts
-                if len_opening == 0 and self.user1 == user:
+                # User1 or User2 starts, no matter which
+                if self.user1 == user:
                     return 0
-                elif len_opening == 1 and self.user2 == user:
+                elif self.user2 == user:
                     return 0
                 return None
 
