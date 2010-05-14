@@ -169,6 +169,8 @@ class Debate(models.Model):
 
         msg.save()
 
+        self.email_send(msg)
+
         return msg
 
     ## Email section
@@ -191,6 +193,29 @@ class Debate(models.Model):
         content = render_to_string('email/participated.txt', ctx)
         subject = '[debattikone] %s osallistui aiheeseen %s' % (self.user2.username, self.topic.title)
         mail.send_mail(subject, content, 'debattikone@debattikone.fi', (self.user1.email,))
+
+    def email_send(self, msg):
+        followers = self.follower.values('email')
+        followers = [f['email'] for f in followers]
+
+        ctx = {
+            'topic': self.topic,
+            'user': msg.user,
+            'msg': msg,
+            'uri': reverse('debate', args=(self.id, self.topic.slug)),
+        }
+        content = render_to_string('email/new_message.txt', ctx)
+        subject = '[debattikone] %s kirjoitti aiheeseen %s' % (msg.user.username, self.topic.title)
+
+        mail_message = mail.EmailMessage()
+        mail_message.subject = subject
+        mail_message.body = content
+
+        mail_message.from_email = 'debattikone@debattikone.fi'
+
+        mail_message.bcc = [self.user1.email, self.user2.email] + followers
+
+        mail_message.send()
 
 # EOF
 
