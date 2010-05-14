@@ -132,6 +132,33 @@ def test_011_participate():
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
 
+def test_012_open():
+    """antagonist opens the debate
+    """
+
+    # Use this only to remember which page we're on
+    current_location = reverse('debate', args=(debate.id, debate.topic.slug))
+
+    res = c.get(current_location)
+
+    exp_retval = 200
+    retval = res.status_code
+    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
+
+    # Post opening
+    data = {
+        'message': 'This is user2 opening the debate',
+    }
+    res = c.post(current_location, data)
+
+    exp_retval = 200
+    retval = res.status_code
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    exp_retval = 1
+    retval = debate.debatemessage_set.count()
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
 def teardown():
     for db in connections:
         call_command('flush', verbosity=0, interactive=False, database=db)
