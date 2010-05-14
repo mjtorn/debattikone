@@ -174,14 +174,13 @@ def test_100_third_can_not_send():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def test_110_user2_tries_to_open():
-    """user1 has not opened the debate yet, so user2's can_send
-    must return None
+    """user1 has not opened the debate yet, so user2 can do it
     """
 
     antagonist = auth_models.User.objects.get(username='antagonist')
 
     retval = debate.can_send(antagonist)
-    exp_retval = None
+    exp_retval = 0
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def test_111_user1_opens():
