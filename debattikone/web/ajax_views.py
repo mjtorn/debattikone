@@ -34,6 +34,28 @@ def follow(request, debate_id, slug):
 def unfollow(request, debate_id, slug):
     return handle_follow(request, debate_id, slug, 'delete')
 
+@ajax_request
+def participate(request, debate_id, slug):
+    debate = get_object_or_None(models.Debate, id=debate_id)
+
+    if debate is None:
+        return {
+            'success': False,
+            'msg': 'Debattia ei löytynyt',
+        }
+
+    can_participate = debate.can_participate(request.user)
+    if can_participate:
+        debate.participate(request.user)
+        return {
+            'success': True,
+            'msg': 'ok',
+        }
+    
+    return {
+        'success': False,
+        'msg': 'Et voi liittyä tähän debattiin',
+    }
 
 # EOF
 
