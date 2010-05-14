@@ -114,5 +114,32 @@ class NewDebateForm(forms.Form):
 
         return debate
 
+
+class DebateMessageForm(forms.Form):
+    message = forms.fields.CharField(widget=forms.widgets.Textarea())
+
+    def clean(self):
+        ## Assume debate and user was smuggled in
+        debate = self.data['debate']
+        user = self.data['user']
+
+        can_send = debate.can_send(user)
+
+        if can_send is None:
+            raise forms.ValidationError('Et voi lähettää debattiin')
+
+        self.cleaned_data['argument_type'] = can_send
+
+        return self.cleaned_data
+
+    def save(self):
+        debate = self.data['debate']
+        user = self.data['user']
+
+        argument_type = self.cleaned_data['argument_type']
+        argument = self.cleaned_data['message']
+
+        return debate.send(user, argument_type, argument)
+
 # EOF
 
