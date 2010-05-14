@@ -2,11 +2,15 @@
 
 from django.views.decorators.csrf import csrf_protect
 
+from django.core.urlresolvers import reverse
+
 from annoying.utils import HttpResponseReload
 
-from debattikone.web import forms
+from debattikone.web import forms, models
 
-from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
+
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
 # Decorators
@@ -53,6 +57,16 @@ def debate(request, debate_id, slug):
     }
     req_ctx = RequestContext(request, context)
     return render_login('index.html', req_ctx)
+
+def participate(request, debate_id, slug):
+    debate = get_object_or_404(models.Debate, id=debate_id)
+
+    can_participate = debate.can_participate(request.user)
+    if can_participate:
+        debate.participate(request.user)
+
+    return HttpResponseRedirect(reverse('debate', args=(debate_id, slug)))
+
 
 # EOF
 
