@@ -151,7 +151,7 @@ def test_012_open():
     }
     res = c.post(current_location, data)
 
-    exp_retval = 200
+    exp_retval = 302
     retval = res.status_code
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
