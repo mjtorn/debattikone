@@ -103,6 +103,15 @@ def test_010_test_follow():
     assert data['success'], data
     assert data['msg'] == 'ok', data
 
+    # Semi-hacky
+    c.get(reverse('debate', args=('2', 'x')))
+
+    data = c.get(reverse('follow_debate', args=('2', 'x')))
+    data = unjson(data)
+
+    assert data['success'], data
+
+
 def test_011_participate():
     """antagonist participates in the debate he was invited to
     """
