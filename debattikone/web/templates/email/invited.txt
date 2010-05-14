@@ -1,0 +1,10 @@
+Sinut on kutsuttu debatoimaan aiheesta {{ topic.title }}
+käyttäjän {{ user1.username }} kanssa sivulla http://debattikone.fi/
+
+Avaa vain linkki ja debatointi alkakoon!
+
+http://debattikone.fi{{ uri }}
+
+-- 
+debattikone
+
