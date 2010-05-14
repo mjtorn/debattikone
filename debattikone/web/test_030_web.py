@@ -28,6 +28,9 @@ def setup():
         if globals().has_key('fixtures'):
             call_command('loaddata', *globals()['fixtures'], **{'verbosity': 0, 'commit': False, 'database': db})
 
+    # Fallia hella, fallia hella, fallia helle, fallia helle!
+    mail.outbox = []
+
 def test_010_fail_test_follow_no_login():
     data = c.get(reverse('follow_debate', args=('1', 'x')))
     data = unjson(data)
@@ -106,25 +109,28 @@ def test_011_participate():
 
     ## Get the correct debate here
     d = models.Debate.objects.filter(invited=antagonist).select_related(depth=1)[0]
+    globals()['debate'] = d
 
     # Load page
     c.get(reverse('debate', args=(d.id, d.topic.slug)))
 
     # Participate
-    data = c.get(reverse('participate', args=(d.id, d.topic.slug)))
-    data = unjson(data)
+    res = c.get(reverse('participate', args=(d.id, d.topic.slug)))
 
-    assert data['success'], data
+    exp_retval = 302
+    retval = res.status_code
+    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
+    # Only one message as the invite was done before box reset
     retval = len(mail.outbox)
     exp_retval = 1
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     # Accidentally try to participate again
-    data = c.get(reverse('participate', args=(d.id, d.topic.slug)))
-    data = unjson(data)
+    exp_retval = 302
+    retval = res.status_code
+    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
-    assert not data['success'], 'Should fail: %s' % data
 
 def teardown():
     for db in connections:
