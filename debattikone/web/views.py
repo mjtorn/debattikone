@@ -59,6 +59,29 @@ def index(request):
     req_ctx = RequestContext(request, context)
     return render_login('index.html', req_ctx)
 
+@csrf_protect
+def new_topic(request):
+    data = request.POST.copy() or None
+
+    new_topic_form = forms.NewTopicForm(data)
+
+    if new_topic_form.is_bound:
+        if new_topic_form.is_valid():
+            new_topic_form.save()
+
+            if data.get('debate'):
+                return HttpResponseRedirect(reverse('new_debate'))
+            else:
+                return HttpResponseReload(request)
+
+
+    context = {
+        'new_topic_form': new_topic_form,
+        'title': 'Uusi keskustelunaihe',
+    }
+    req_ctx = RequestContext(request, context)
+    return render_login('new_topic.html', req_ctx)
+
 def debate(request, debate_id, slug):
     debate = get_object_or_404(models.Debate, id=debate_id)
 
