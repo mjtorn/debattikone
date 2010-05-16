@@ -69,7 +69,7 @@ class NewTopicForm(forms.Form):
 
 @autostrip
 class NewDebateForm(forms.Form):
-    topic = forms.models.ModelChoiceField(models.Topic.objects.all().order_by('-id'), label='Aihe', empty_label=None, error_messages=REG_ERRS)
+    topic = forms.models.ModelChoiceField(models.Topic.objects.all().order_by('slug'), label='Aihe', empty_label=None, error_messages=REG_ERRS)
     invited = forms.models.ModelChoiceField(auth_models.User.objects.all().order_by('username'), label='Kutsu käyttäjä', required=False, error_messages=REG_ERRS)
 
     invite_random = forms.fields.BooleanField(label='Kutsu satunnainen käyttäjä', required=False)
