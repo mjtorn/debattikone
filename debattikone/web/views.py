@@ -99,9 +99,10 @@ def new_debate(request, slug=None):
 
     if new_debate_form.is_bound:
         if new_debate_form.is_valid():
+            new_debate_form.cleaned_data['user'] = request.user
             debate = new_debate_form.save()
 
-            return HttpResponseRedirect(reverse('debate', args=(debate.id, debate.slug)))
+            return HttpResponseRedirect(reverse('debate', args=(debate.id, topic.slug)))
 
     context = {
         'new_debate_form': new_debate_form,
