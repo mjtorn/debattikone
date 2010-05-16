@@ -8,6 +8,7 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^logout/$', views.logout_view, name='logout'),
     url(r'^topic/new/$', views.new_topic, name='new_topic'),
     url(r'^debate/new/$', views.new_debate, name='new_debate'),
     url(r'^debate/new/(?P<slug>[\w-]+)$', views.new_debate, name='new_debate'),
