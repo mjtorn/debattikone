@@ -98,7 +98,7 @@ class NewDebateForm(forms.Form):
         if debate is not None:
             if invite_random:
                 raise forms.ValidationError('Satunnaista vastapuolta ei löydetty')
-            else:
+            elif not debate.is_closed():
                 raise forms.ValidationError('Sinulla on jo tällainen debatti')
 
         return self.cleaned_data
