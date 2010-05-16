@@ -46,7 +46,14 @@ render_login = has_login(render_to_response)
 
 @csrf_protect
 def index(request):
+    ## Feature a random debate
+    try:
+        debate = models.Debate.objects.all().order_by('?')[0]
+    except IndexError:
+        debate = 'kala' #None
+
     context = {
+        'debate': debate,
         'title': 'Etusivu',
     }
     req_ctx = RequestContext(request, context)
