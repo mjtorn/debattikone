@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>
+Täällä luot uuden debatin.
+</p>
+<p>
+Lol
+</p>
+
+<p>
+		<form action="" method="post">
+		{% csrf_token %}
+	{% if not request.user.id %}
+		{{ login_form.as_p }}
+		<button name="login" value="login">Kirjaudu</button>
+	{% else %}
+		{{ new_debate_form.as_p }}
+		<br />
+		<button name="new_debate" value="create">Luo uusi</button>
+	{% endif %}
+		</form>
+
+</p>
+
+{% endblock %}
+
+
+
