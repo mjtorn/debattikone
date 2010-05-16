@@ -18,6 +18,9 @@ class Topic(models.Model):
     summary = models.CharField(max_length=1024)
     slug = models.SlugField(unique=True)
 
+    def __unicode__(self):
+        return '%s (%s)' % (self.title, self.slug)
+
     def save(self):
         slug = slugify(self.title)
         if not Topic.objects.filter(slug=slug).exclude(id=self.id).count():
