@@ -84,7 +84,8 @@ def new_topic(request):
 
 @csrf_protect
 def new_debate(request, slug=None):
-    topic = get_object_or_404(models.Topic, slug=slug)
+    if slug:
+        topic = get_object_or_404(models.Topic, slug=slug)
 
     data = request.POST.copy() or None
 
