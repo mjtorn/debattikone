@@ -67,10 +67,10 @@ def new_topic(request):
 
     if new_topic_form.is_bound:
         if new_topic_form.is_valid():
-            new_topic_form.save()
+            topic = new_topic_form.save()
 
             if data.get('debate'):
-                return HttpResponseRedirect(reverse('new_debate'))
+                return HttpResponseRedirect(reverse('new_debate', args=(topic.slug,)))
             else:
                 return HttpResponseReload(request)
 
@@ -81,6 +81,34 @@ def new_topic(request):
     }
     req_ctx = RequestContext(request, context)
     return render_login('new_topic.html', req_ctx)
+
+@csrf_protect
+def new_debate(request, slug=None):
+    topic = get_object_or_404(models.Topic, slug=slug)
+
+    data = request.POST.copy() or None
+
+    if slug:
+        initial = {
+            'topic': topic,
+        }
+    else:
+        initial = None
+
+    new_debate_form = forms.NewDebateForm(data=data, initial=initial)
+
+    if new_debate_form.is_bound:
+        if new_debate_form.is_valid():
+            debate = new_debate_form.save()
+
+            return HttpResponseRedirect(reverse('debate', args=(debate.id, debate.slug)))
+
+    context = {
+        'new_debate_form': new_debate_form,
+        'title': 'Uusi debatti',
+    }
+    req_ctx = RequestContext(request, context)
+    return render_login('new_debate.html', req_ctx)
 
 def debate(request, debate_id, slug):
     debate = get_object_or_404(models.Debate, id=debate_id)
