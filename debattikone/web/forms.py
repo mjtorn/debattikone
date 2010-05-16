@@ -17,9 +17,9 @@ REG_ERRS = {
 
 @autostrip
 class RegisterForm(forms.Form):
-    username = forms.fields.CharField(max_length=32, error_messages=REG_ERRS)
-    email = forms.fields.EmailField(error_messages=REG_ERRS)
-    password = forms.fields.CharField(widget=forms.widgets.HiddenInput(), error_messages=REG_ERRS)
+    username = forms.fields.CharField(label='Käyttäjätunnus', max_length=32, error_messages=REG_ERRS)
+    email = forms.fields.EmailField(label='Sähköposti', error_messages=REG_ERRS)
+    password = forms.fields.CharField(label='Salasana', widget=forms.widgets.HiddenInput(), error_messages=REG_ERRS)
 
     def clean_username(self):
         u = get_object_or_None(auth_models.User, username=self.data['username'])
@@ -40,8 +40,8 @@ class RegisterForm(forms.Form):
 
 @autostrip
 class LoginForm(forms.Form):
-    l_username = forms.fields.CharField(max_length=32, error_messages=REG_ERRS)
-    l_password = forms.fields.CharField(widget=forms.widgets.PasswordInput())
+    l_username = forms.fields.CharField(label='Käyttäjätunnus', max_length=32, error_messages=REG_ERRS)
+    l_password = forms.fields.CharField(label='Salasana', widget=forms.widgets.PasswordInput())
 
     def clean(self):
         user = get_object_or_None(auth_models.User, username=self.cleaned_data['l_username'])
@@ -54,8 +54,8 @@ class LoginForm(forms.Form):
 
 @autostrip
 class NewTopicForm(forms.Form):
-    title = forms.fields.CharField(max_length=64, error_messages=REG_ERRS)
-    summary = forms.fields.CharField(max_length=1024, widget=forms.widgets.Textarea(), error_messages=REG_ERRS)
+    title = forms.fields.CharField(label='Otsikko', max_length=64, error_messages=REG_ERRS)
+    summary = forms.fields.CharField(label='Yhteenveto', max_length=1024, widget=forms.widgets.Textarea(), error_messages=REG_ERRS)
 
     def save(self):
         topic = models.Topic()
@@ -69,10 +69,10 @@ class NewTopicForm(forms.Form):
 
 @autostrip
 class NewDebateForm(forms.Form):
-    topic = forms.models.ModelChoiceField(models.Topic.objects.all().order_by('-id'), empty_label=None, error_messages=REG_ERRS)
-    invited = forms.models.ModelChoiceField(auth_models.User.objects.all().order_by('username'), required=False, error_messages=REG_ERRS)
+    topic = forms.models.ModelChoiceField(models.Topic.objects.all().order_by('-id'), label='Aihe', empty_label=None, error_messages=REG_ERRS)
+    invited = forms.models.ModelChoiceField(auth_models.User.objects.all().order_by('username'), label='Kutsu käyttäjä', required=False, error_messages=REG_ERRS)
 
-    invite_random = forms.fields.BooleanField(required=False)
+    invite_random = forms.fields.BooleanField(label='Kutsu satunnainen käyttäjä', required=False)
 
     def clean(self):
         if not self.cleaned_data.has_key('topic'):
@@ -117,7 +117,7 @@ class NewDebateForm(forms.Form):
 
 @autostrip
 class DebateMessageForm(forms.Form):
-    message = forms.fields.CharField(widget=forms.widgets.Textarea())
+    message = forms.fields.CharField(label='Viesti', widget=forms.widgets.Textarea())
 
     def clean(self):
         ## Assume debate and user was smuggled in
