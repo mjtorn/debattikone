@@ -44,6 +44,14 @@ render_login = has_login(render_to_response)
 
 # Create your views here.
 
+def logout_view(request):
+    from django.contrib.auth import logout
+    next = request.GET.get('next', '/')
+
+    logout(request)
+
+    return HttpResponseRedirect(next)
+
 @csrf_protect
 def index(request):
     ## Feature a random debate
