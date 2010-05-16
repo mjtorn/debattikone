@@ -9,10 +9,33 @@
     </head>
 
     <body>
-	{% block menu %}
+	<div id="top">
+	<h1>Debattikone</h1>
+	<h2>Älykästä keskustelua nettiin</h2>
+	<div id="date">
+	2010-05-16
+	</div>
+	<div id="top_menu">
+	{% block top_menu %}
+	Uusi aihe | Debatoi
+	{% endblock %}
+	</div>
+	</div>
+	{% block left %}
 	<p>
+		{% if not request.user.id %}
+		<form action="" method="post">
+		{% csrf_token %}
 		{{ login_form.as_p }}
+		<button name="login" value="login">Kirjaudu</button>
+		</form>
+		{% else %}
+		{{ request.user }} (Kirjaudu ulos)
+		{% endif %}
 	</p>
+	{% if debate %}
+	DEBATE
+	{% endif %}
 	{% endblock %}
 
 	{% block content %}
