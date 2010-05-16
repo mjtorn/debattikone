@@ -90,7 +90,7 @@ def new_debate(request, slug=None):
 
     if slug:
         initial = {
-            'topic': topic,
+            'topic': topic.id,
         }
     else:
         initial = None
