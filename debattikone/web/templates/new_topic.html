@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>
+Täällä voit luoda uuden keskusteluaiheen. Ystävällisesti, ethän luo aihetta, joka on jo olemassa, ellet nimenomaan halua lähestyä sitä eri suunnalta. Kuvaus-kenttään kannattaa siis kuvailla aihetta mahdollisimman tarkasti.
+</p>
+<p>
+Jos unselectaat checkboxin, ehdotat puheenaihetta debatoimatta sitä itse.
+</p>
+
+<p>
+		<form action="" method="post">
+		{% csrf_token %}
+	{% if not request.user.id %}
+		{{ login_form.as_p }}
+		<button name="login" value="login">Kirjaudu</button>
+	{% else %}
+		{{ new_topic_form.as_p }}
+		<input type="checkbox" name="debate" value="debate" checked="checked" /> Haluan tehdä tästä uuden debatin.
+		<br />
+		<button name="new_topic" value="create">Luo uusi</button>
+	{% endif %}
+		</form>
+
+</p>
+
+{% endblock %}
+
+
