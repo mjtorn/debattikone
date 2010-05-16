@@ -90,7 +90,7 @@ def test_013_login_ok():
     exp_retval = 302
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
-def test_010_test_follow():
+def test_110_test_follow():
     """antagonist loads the front page, the first debate, and follows
     """
 
@@ -112,7 +112,7 @@ def test_010_test_follow():
     assert data['success'], data
 
 
-def test_011_participate():
+def test_111_participate():
     """antagonist participates in the debate he was invited to
     """
 
@@ -141,7 +141,7 @@ def test_011_participate():
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
 
-def test_012_open():
+def test_112_open():
     """antagonist opens the debate
     """
 
