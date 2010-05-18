@@ -90,6 +90,42 @@ def test_013_login_ok():
     exp_retval = 302
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
+def test_014_logout_ok():
+    """antagonist logs out
+    """
+
+    c.get(reverse('logout'))
+
+def test_015_register_new():
+    """a new participant browses and registers
+    """
+
+    c.get(reverse('index'))
+
+    # See the complete list of debates
+    c.get(reverse('debate_list'))
+
+    # See the list of open debates
+    c.get(reverse('debate_list', kwargs={'filter': 'open'}))
+
+    # Open one
+    c.get(reverse('debate', args=('1', 'x')))
+
+    # "See" the login/register forms and register
+    data = {
+        'username': 'fourth',
+        'password': 'test_case_password',
+        'email': 'mjt+debattikone@nysv.org',
+    }
+
+    res = c.post(reverse('debate', args=('1', 'x')), data)
+
+    globals()['user2'] = auth_models.User.objects.get(username='fourth')
+
+    exp_retval = 302
+    retval = res.status_code
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
 def test_110_test_follow():
     """antagonist loads the front page, the first debate, and follows
     """
@@ -113,19 +149,39 @@ def test_110_test_follow():
 
 
 def test_111_participate():
-    """antagonist participates in the debate he was invited to
+    """'fourth' tries to participate in wrong debate, participates in ok
     """
 
-    ## Get the correct debate here
-    d = models.Debate.objects.filter(invited=antagonist).select_related(depth=1)[0]
-    globals()['debate'] = d
+    ## Get the correct debates here
+    antagonist_invited = models.Debate.objects.filter(invited=antagonist).select_related(depth=1)[0]
+    antagonist_not_invited = models.Debate.objects.exclude(invited=antagonist).select_related(depth=1)[0]
+    globals()['d'] = antagonist_invited
+    globals()['d2'] = antagonist_not_invited
 
     # Load page
     c.get(reverse('debate', args=(d.id, d.topic.slug)))
 
-    # Participate
+    # Participate in wrong debate
     res = c.get(reverse('participate', args=(d.id, d.topic.slug)))
 
+    exp_retval = None
+    retval = d.user2
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    # Load page
+    c.get(reverse('debate', args=(d2.id, d2.topic.slug)))
+
+    # Participate in correct
+    res = c.get(reverse('participate', args=(d2.id, d2.topic.slug)))
+
+    # Check that we set the user ok
+    antagonist_not_invited = models.Debate.objects.exclude(invited=antagonist).select_related(depth=1)[0]
+    globals()['d2'] = antagonist_not_invited
+    exp_retval = user2
+    retval = d2.user2
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    # and redireced out
     exp_retval = 302
     retval = res.status_code
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
@@ -146,7 +202,7 @@ def test_112_open():
     """
 
     # Use this only to remember which page we're on
-    current_location = reverse('debate', args=(debate.id, debate.topic.slug))
+    current_location = reverse('debate', args=(d2.id, d2.topic.slug))
 
     res = c.get(current_location)
 
@@ -162,11 +218,11 @@ def test_112_open():
 
     exp_retval = 302
     retval = res.status_code
-    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
     # Database check
     exp_retval = 1
-    retval = debate.debatemessage_set.count()
+    retval = d2.debatemessage_set.count()
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     # Email check
