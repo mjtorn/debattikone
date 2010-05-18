@@ -19,7 +19,7 @@ REG_ERRS = {
 class RegisterForm(forms.Form):
     username = forms.fields.CharField(label='Käyttäjätunnus', max_length=32, error_messages=REG_ERRS)
     email = forms.fields.EmailField(label='Sähköposti', error_messages=REG_ERRS)
-    password = forms.fields.CharField(label='Salasana', widget=forms.widgets.HiddenInput(), error_messages=REG_ERRS)
+    password = forms.fields.CharField(label='Salasana', widget=forms.widgets.PasswordInput(), error_messages=REG_ERRS)
 
     def clean_username(self):
         u = get_object_or_None(auth_models.User, username=self.data['username'])
