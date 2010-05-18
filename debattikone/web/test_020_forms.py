@@ -174,6 +174,10 @@ def test_202_success_new_debate_invite():
     form.cleaned_data['user'] = mjt
     globals()['invite_debate'] = form.save()
 
+    exp_retval = 2
+    retval = models.Debate.objects.count()
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
 def test_203_success_new_debate_invite_random():
     data = {
         'topic': topic.id,
