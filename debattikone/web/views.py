@@ -161,6 +161,13 @@ def debate(request, debate_id, slug):
     req_ctx = RequestContext(request, context)
     return render_login('debate.html', req_ctx)
 
+def debate_list(request, filter=None):
+    context = {
+    }
+    req_ctx = RequestContext(request, context)
+    return render_login('debate.html', req_ctx)
+    
+
 def participate(request, debate_id, slug):
     debate = get_object_or_404(models.Debate, id=debate_id)
 
