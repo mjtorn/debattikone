@@ -84,6 +84,8 @@ class Debate(models.Model):
         if self.user2 is None and self.invited == user:
             return True
 
+        return False
+
     def can_send(self, user):
         """Return what type of message user can send
         None - nothing
