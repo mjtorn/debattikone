@@ -23,8 +23,14 @@ def has_login(func):
         data = request.POST.copy() or None
 
         login_form = forms.LoginForm()
+        register_form = forms.RegisterForm()
         if data is not None:
-            if data.has_key('l_username') and data.has_key('l_password'):
+            l_username = data.get('l_username')
+            l_password = data.get('l_password')
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
+            if l_username and l_password:
                 login_form = forms.LoginForm(data)
                 if login_form.is_valid():
                     from django.contrib.auth import authenticate, login
@@ -36,7 +42,19 @@ def has_login(func):
                         login(request, user)
 
                         return HttpResponseReload(request)
+            elif username and password and email:
+                register_form = forms.RegisterForm(data)
+                if register_form.is_valid():
+                    from django.contrib.auth import authenticate, login
+                    register_form.save()
+
+                    user = authenticate(username=username, password=password)
+                    login(request, user)
+
+                    return HttpResponseReload(request)
+
         req_ctx['login_form'] = login_form
+        req_ctx['register_form'] = register_form
         return func(*args, **kwargs)
     return wrap
 
