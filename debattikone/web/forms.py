@@ -35,7 +35,9 @@ class RegisterForm(forms.Form):
         user = auth_models.User(username=username, email=email)
         user.set_password(password)
 
-        return user.save()
+        user.save()
+
+        return user
 
 
 @autostrip
