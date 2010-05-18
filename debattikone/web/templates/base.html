@@ -23,15 +23,7 @@
 	</div>
 	{% block left %}
 	<p>
-		{% if not request.user.id %}
-		<form action="" method="post">
-		{% csrf_token %}
-		{{ login_form.as_p }}
-		<button name="login" value="login">Kirjaudu</button>
-		</form>
-		{% else %}
-		{{ request.user }} (Kirjaudu ulos)
-		{% endif %}
+	{% include "tags/login_and_register.html" %}
 	</p>
 	{% if debate %}
 	{{ debate }}
