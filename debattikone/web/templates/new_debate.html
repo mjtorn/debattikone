@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>
+<p class="debate_help">
 Täällä luot uuden debatin.
 </p>
-<p>
-Lol
+<p class="debate_help">
+Voit kutsua tietyn käyttäjän, satunnaisen käyttäjän, tai jättää debatin avoimeksi, jolloin kuka tahansa saa liittyä.
+</p>
+<p class="debate_help">
+Toisen käyttäjän liityttyä molemmat esittävät avausargumentin, jonka jälkeen saat kysyä ensimmäisen kysymyksen. Keskustelu etenee sen jälkeen vuoroissa; vastapuoli vastaa, esittää oman kysymyksensä ja sinä vastaat.
 </p>
 
 <p>
 		<form action="" method="post">
 		{% csrf_token %}
 	{% if not request.user.id %}
-		{{ login_form.as_p }}
-		<button name="login" value="login">Kirjaudu</button>
+		<div class="login_and_register">
+		{% include "tags/login_and_register.html" %}
+		</div>
 	{% else %}
 		{{ new_debate_form.as_p }}
 		<br />
