@@ -156,17 +156,21 @@ def debate(request, debate_id, slug):
         else:
             print debate_message_form.errors
 
+    messages = debate.debatemessage_set.all().order_by('id')
+
     context = {
+        'debate': debate,
+        'messages': messages,
     }
     req_ctx = RequestContext(request, context)
     return render_login('debate.html', req_ctx)
 
 def debate_list(request, filter=None):
-    debates = models.Debate.objects.all().order_by('-id')
+    debates = models.Debate.objects.all().select_related(depth=1).order_by('-id')
 
     ## FIXME: Do this horrible thing in sql plz
     if filter == 'open':
-        debates = debates.filter(user2__isnull=True)
+        debates = debates.filter(user2__isnull=True, invited__isnull=True)
         debates = [d for d in debates if not d.is_closed()]
     elif filter == 'current':
         debates = debates.exclude(user2__isnull=True)
