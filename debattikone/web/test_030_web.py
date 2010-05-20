@@ -220,6 +220,18 @@ def test_112_open():
     retval = res.status_code
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
+    ## Test fail other opening
+    data = {
+        'message': 'This is user2 opening the debate again, should fail',
+    }
+    res = c.post(current_location, data)
+
+    exp_retval = 200
+    retval = res.status_code
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    assert 'Puheenvuoro on toisella osapuolella' in res.content, 'Failed to transfer turn?'
+
     # Database check
     exp_retval = 1
     retval = d2.debatemessage_set.count()
