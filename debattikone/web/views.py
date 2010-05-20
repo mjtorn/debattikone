@@ -162,11 +162,21 @@ def debate(request, debate_id, slug):
     return render_login('debate.html', req_ctx)
 
 def debate_list(request, filter=None):
+    debates = models.Debate.objects.all().order_by('-id')
+
+    ## FIXME: Do this horrible thing in sql plz
+    if filter == 'open':
+        debates = debates.filter(user2__isnull=True)
+        debates = [d for d in debates if not d.is_closed()]
+    elif filter == 'current':
+        debates = debates.exclude(user2__isnull=True)
+        debates = [d for d in debates if not d.is_closed()]
+
     context = {
+        'debates': debates,
     }
     req_ctx = RequestContext(request, context)
-    return render_login('debate.html', req_ctx)
-    
+    return render_login('debate_list.html', req_ctx)
 
 def participate(request, debate_id, slug):
     debate = get_object_or_404(models.Debate, id=debate_id)

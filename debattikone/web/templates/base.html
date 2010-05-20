@@ -17,7 +17,12 @@
 	</div>
 	<div id="top_menu">
 	{% block top_menu %}
-	<a href="{% url index %}">Alkuun</a> | <a href="{% url new_topic %}">Uusi aihe</a> | <a href="{% url new_debate %}">Uusi debatti</a>
+	<a href="{% url index %}">Alkuun</a> |
+	<a href="{% url new_topic %}">Uusi aihe</a> |
+	<a href="{% url new_debate %}">Uusi debatti</a> |
+	<a href="{% url debate_list "open" %}">Avoimet debatit</a> |
+	<a href="{% url debate_list "current" %}">Käynnissä olevat debatit</a> |
+	<a href="{% url debate_list %}">Kaikki debatit</a>
 	{% endblock %}
 	</div>
 	</div>
