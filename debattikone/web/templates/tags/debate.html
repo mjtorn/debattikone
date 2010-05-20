@@ -1,0 +1,13 @@
+{% load debattikone_filters %}
+<h3>{{ debate.topic.title }}</h3>
+
+<p class="debate_summary">
+{{ debate.topic.summary }}
+</p>
+
+(<a href="{% url debate debate.id debate.topic.slug %}">avaa</a>)
+
+{% if debate|can_participate:user %}
+(<a href="{% url participate debate.id debate.topic.slug %}">Osallistu</a>)
+{% endif %}
+
