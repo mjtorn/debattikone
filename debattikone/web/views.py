@@ -160,6 +160,7 @@ def debate(request, debate_id, slug):
 
     context = {
         'debate': debate,
+        'debate_message_form': debate_message_form,
         'messages': messages,
     }
     req_ctx = RequestContext(request, context)
