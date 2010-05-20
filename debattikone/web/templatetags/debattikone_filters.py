@@ -8,5 +8,9 @@ register = Library()
 def can_participate(debate, user):
     return debate.can_participate(user)
 
+@register.filter
+def can_send(debate, user):
+    return debate.can_send(user)
+
 # EOF
 
