@@ -114,9 +114,11 @@ class Debate(models.Model):
             if len_opening < 2:
                 # User1 or User2 starts, no matter which
                 if self.user1 == user:
-                    return 0
+                    if not self.user1 in [m.user for m in opening_messages]:
+                        return 0
                 elif self.user2 == user:
-                    return 0
+                    if not self.user2 in [m.user for m in opening_messages]:
+                        return 0
                 return None
 
             if len_normal < self.msg_limit:
