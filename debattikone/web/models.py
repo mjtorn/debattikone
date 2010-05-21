@@ -45,7 +45,7 @@ class Topic(models.Model):
 class DebateMessage(models.Model):
     user = models.ForeignKey(auth_models.User)
     debate = models.ForeignKey("Debate")
-    argument_type = models.IntegerField(choices=((0, 'Opening argument'), (1, 'Normal argument'), (2, 'Closing argument')))
+    argument_type = models.IntegerField(choices=((0, 'Opening argument'), (1, 'Question'), (2, 'Reply'), (3, 'Closing argument')))
     argument = models.TextField()
 
 
