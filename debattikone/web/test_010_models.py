@@ -262,7 +262,7 @@ def test_114_user2_first_re():
     debate.send(antagonist, retval, u2r1)
 
     retval = debate.get_table()
-    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1]]
+    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, ''], ['', u2r1]]
     assert retval == exp_retval, 'Table mismatch, %s' % retval
 
 def test_115_user1_out_of_turn():
@@ -294,7 +294,7 @@ def test_116_user2_first_q_and_user1_re():
     debate.send(antagonist, retval, u2q1)
 
     retval = debate.get_table()
-    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1], ['', u2q1]]
+    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, ''], ['', u2r1], ['', u2q1]]
     assert retval == exp_retval, 'Table mismatch'
 
     retval = debate.can_send(mjt)
@@ -305,7 +305,7 @@ def test_116_user2_first_q_and_user1_re():
     debate.send(mjt, retval, u1r1)
 
     retval = debate.get_table()
-    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1], ['', u2q1], [u1r1, '']]
+    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, ''], ['', u2r1], ['', u2q1], [u1r1, '']]
     assert retval == exp_retval, 'Table mismatch'
 
     ## For the rest of the debate
@@ -360,7 +360,7 @@ def test_117_rest_of_the_debate():
         debate.send(antagonist, retval, 'user2 re')
 
         # User2's reply is edited in-place like
-        exp_state[-1][1] = 'user2 re'
+        exp_state.append(['', 'user2 re'])
 
         retval = debate.get_table()
         assert retval == exp_state, 'Table mismatch'
