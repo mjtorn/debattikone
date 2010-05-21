@@ -196,6 +196,10 @@ def test_111_user1_opens():
     globals()['user1_open_arg'] = 'user1 opening argument'
     debate.send(mjt, retval, user1_open_arg)
 
+    retval = debate.get_table()
+    exp_retval = [[user1_open_arg, '']]
+    assert retval == exp_retval, 'Table mismatch'
+
 def test_112_user2_presents_open():
     """user2 presents his opening argument
     """
@@ -210,6 +214,10 @@ def test_112_user2_presents_open():
     debate.send(antagonist, retval, user2_open_arg)
 
     print [s.argument_type for s in debate.debatemessage_set.all()]
+
+    retval = debate.get_table()
+    exp_retval = [[user1_open_arg, user2_open_arg]]
+    assert retval == exp_retval, 'Table mismatch'
 
     ## Also fail having antagonist trying to send
     retval = debate.can_send(antagonist)
@@ -230,6 +238,10 @@ def test_113_user1_first_q():
     globals()['u1q1'] = 'user1 first question'
     debate.send(mjt, retval, u1q1)
 
+    retval = debate.get_table()
+    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, '']]
+    assert retval == exp_retval, 'Table mismatch'
+
 def test_114_user2_first_re():
     """User 2 tests can_send, can send a normal, answers the
     question
@@ -243,6 +255,10 @@ def test_114_user2_first_re():
 
     globals()['u2r1'] = 'user2 first re'
     debate.send(antagonist, retval, u2r1)
+
+    retval = debate.get_table()
+    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1]]
+    assert retval == exp_retval, 'Table mismatch'
 
 def test_115_user1_out_of_turn():
     """User 1 tests can_send, sees can not send (user2's turn)
@@ -270,12 +286,20 @@ def test_116_user2_first_q_and_user1_re():
     globals()['u2q1'] = 'user2 first q'
     debate.send(antagonist, retval, u2q1)
 
+    retval = debate.get_table()
+    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1], ['', u2q1]]
+    assert retval == exp_retval, 'Table mismatch'
+
     retval = debate.can_send(mjt)
     exp_retval = 1
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u1r1'] = 'user1 first re'
     debate.send(mjt, retval, u1r1)
+
+    retval = debate.get_table()
+    exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1], ['', u2q1], [u1r1, '']]
+    assert retval == exp_retval, 'Table mismatch'
 
     ## Now we should have two questions and two answers
     messages = debate.debatemessage_set.all()
