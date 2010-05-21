@@ -135,18 +135,14 @@ class Debate(models.Model):
                 # user1 starts
                 elif not len_normal and user == self.user1:
                     return TYPE_QUESTION
-                # One message means user2 replies
-                elif len_normal == 1:
-                    if normal_messages[-1].user != user:
-                        return TYPE_REPLY
-                elif len_normal >= 2:
+                elif len_normal >= 1:
                     # user1 asked and user2 replied, user2's turn
-                    if normal_messages[-2].user != normal_messages[-1].user:
+                    if normal_messages[-1].argument_type == TYPE_REPLY:
                         if normal_messages[-1].user == user:
                             return TYPE_QUESTION
 
                     # user2 replied, asked new question, user1's turn
-                    if normal_messages[-2].user == normal_messages[-1].user:
+                    if normal_messages[-1].argument_type == TYPE_QUESTION:
                         if normal_messages[-1].user != user:
                             return TYPE_REPLY
 
