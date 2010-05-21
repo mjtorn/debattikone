@@ -443,6 +443,20 @@ def test_118_finalize_debate():
     exp_state[-1][1] = u2c
     assert retval == exp_state, 'Table mismatch, %s' % retval
 
+    ## Make sure these are closed
+    retval = debate.can_send(mjt)
+    exp_retval = TYPE_NOTHING
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    retval = debate.can_send(antagonist)
+    exp_retval = TYPE_NOTHING
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    third = auth_models.User.objects.get(username='third')
+
+    retval = debate.can_send(third)
+    exp_retval = TYPE_NOTHING
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def test_200_hax_other_debate():
     """This would never happen irl, but edit second debate's msg_limit
