@@ -301,6 +301,9 @@ def test_116_user2_first_q_and_user1_re():
     exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1], ['', u2q1], [u1r1, '']]
     assert retval == exp_retval, 'Table mismatch'
 
+    ## For the rest of the debate
+    globals()['exp_state'] = retval
+
     ## Now we should have two questions and two answers
     messages = debate.debatemessage_set.all()
     normal_messages = [m for m in messages if m.argument_type == 1]
@@ -329,33 +332,57 @@ def test_117_rest_of_the_debate():
         if len(normal_messages) >= msg_limit:
             break
 
-        # user1 asks question
+        ## user1 asks question
         retval = debate.can_send(mjt)
         exp_retval = 1
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(mjt, retval, 'user1 q')
 
-        # user2 replies
+        # To test
+        exp_state.append(['user1 q', ''])
+
+        retval = debate.get_table()
+        assert retval == exp_state, 'Table mismatch'
+
+        ## user2 replies
         retval = debate.can_send(antagonist)
         exp_retval = 1
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(antagonist, retval, 'user2 re')
 
-        # asks question
+        # User2's reply is edited in-place like
+        exp_state[-1][1] = 'user2 re'
+
+        retval = debate.get_table()
+        assert retval == exp_state, 'Table mismatch'
+
+        ## asks question
         retval = debate.can_send(antagonist)
         exp_retval = 1
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(antagonist, retval, 'user2 q')
 
-        # user1 replies
+        # Update state
+        exp_state.append(['', 'user2 q'])
+
+        retval = debate.get_table()
+        assert retval == exp_state, 'Table mismatch'
+
+        ## user1 replies
         retval = debate.can_send(mjt)
         exp_retval = 1
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(mjt, retval, 'user1 re')
+
+        # Update state
+        exp_state.append(['user1 re', ''])
+
+        retval = debate.get_table()
+        assert retval == exp_state, 'Table mismatch'
 
     messages = debate.debatemessage_set.all()
     count = len([m for m in messages if m.argument_type == 1])
