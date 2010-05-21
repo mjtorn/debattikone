@@ -156,12 +156,12 @@ def debate(request, debate_id, slug):
         else:
             print debate_message_form.errors
 
-    messages = debate.debatemessage_set.all().order_by('id')
+    debate_table = debate.get_table()
 
     context = {
         'debate': debate,
         'debate_message_form': debate_message_form,
-        'messages': messages,
+        'debate_table': debate_table,
     }
     req_ctx = RequestContext(request, context)
     return render_login('debate.html', req_ctx)
