@@ -14,6 +14,11 @@ def setup():
         if globals().has_key('fixtures'):
             call_command('loaddata', *globals()['fixtures'], **{'verbosity': 0, 'commit': False, 'database': db})
 
+    # >8D
+    for a in dir(models):
+        if a.startswith('TYPE'):
+            globals()[a] = getattr(models, a)
+
 def test_010_create_topic():
     topic = models.Topic()
 
@@ -170,7 +175,7 @@ def test_100_third_can_not_send():
     third = auth_models.User.objects.get(username='third')
 
     retval = debate.can_send(third)
-    exp_retval = None
+    exp_retval = TYPE_NOTHING
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def test_110_user2_tries_to_open():
@@ -180,7 +185,7 @@ def test_110_user2_tries_to_open():
     antagonist = auth_models.User.objects.get(username='antagonist')
 
     retval = debate.can_send(antagonist)
-    exp_retval = 0
+    exp_retval = TYPE_OPEN
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def test_111_user1_opens():
@@ -190,7 +195,7 @@ def test_111_user1_opens():
     mjt = auth_models.User.objects.get(username='mjt')
 
     retval = debate.can_send(mjt)
-    exp_retval = 0
+    exp_retval = TYPE_OPEN
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['user1_open_arg'] = 'user1 opening argument'
@@ -207,7 +212,7 @@ def test_112_user2_presents_open():
     antagonist = auth_models.User.objects.get(username='antagonist')
 
     retval = debate.can_send(antagonist)
-    exp_retval = 0
+    exp_retval = TYPE_OPEN
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['user2_open_arg'] = 'user2 opening argument'
@@ -221,7 +226,7 @@ def test_112_user2_presents_open():
 
     ## Also fail having antagonist trying to send
     retval = debate.can_send(antagonist)
-    exp_retval = None
+    exp_retval = TYPE_NOTHING
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def test_113_user1_first_q():
@@ -232,7 +237,7 @@ def test_113_user1_first_q():
     mjt = auth_models.User.objects.get(username='mjt')
 
     retval = debate.can_send(mjt)
-    exp_retval = 1
+    exp_retval = TYPE_QUESTION
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u1q1'] = 'user1 first question'
@@ -250,7 +255,7 @@ def test_114_user2_first_re():
     antagonist = auth_models.User.objects.get(username='antagonist')
 
     retval = debate.can_send(antagonist)
-    exp_retval = 1
+    exp_retval = TYPE_REPLY
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u2r1'] = 'user2 first re'
@@ -258,7 +263,7 @@ def test_114_user2_first_re():
 
     retval = debate.get_table()
     exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, u2r1]]
-    assert retval == exp_retval, 'Table mismatch'
+    assert retval == exp_retval, 'Table mismatch, %s' % retval
 
 def test_115_user1_out_of_turn():
     """User 1 tests can_send, sees can not send (user2's turn)
@@ -268,7 +273,7 @@ def test_115_user1_out_of_turn():
     mjt = auth_models.User.objects.get(username='mjt')
 
     retval = debate.can_send(mjt)
-    exp_retval = None
+    exp_retval = TYPE_NOTHING
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
 def test_116_user2_first_q_and_user1_re():
@@ -278,9 +283,11 @@ def test_116_user2_first_q_and_user1_re():
     mjt = auth_models.User.objects.get(username='mjt')
     antagonist = auth_models.User.objects.get(username='antagonist')
 
+    msgs = list(debate.debatemessage_set.all().order_by('id'))
+
     # Finish first round
     retval = debate.can_send(antagonist)
-    exp_retval = 1
+    exp_retval = TYPE_QUESTION
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u2q1'] = 'user2 first q'
@@ -291,7 +298,7 @@ def test_116_user2_first_q_and_user1_re():
     assert retval == exp_retval, 'Table mismatch'
 
     retval = debate.can_send(mjt)
-    exp_retval = 1
+    exp_retval = TYPE_ANSWER
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u1r1'] = 'user1 first re'
@@ -334,7 +341,7 @@ def test_117_rest_of_the_debate():
 
         ## user1 asks question
         retval = debate.can_send(mjt)
-        exp_retval = 1
+        exp_retval = TYPE_QUESTION
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(mjt, retval, 'user1 q')
@@ -343,11 +350,11 @@ def test_117_rest_of_the_debate():
         exp_state.append(['user1 q', ''])
 
         retval = debate.get_table()
-        assert retval == exp_state, 'Table mismatch'
+        assert retval == exp_state, 'Table mismatch, %s' % retval
 
         ## user2 replies
         retval = debate.can_send(antagonist)
-        exp_retval = 1
+        exp_retval = TYPE_REPLY
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(antagonist, retval, 'user2 re')
@@ -360,7 +367,7 @@ def test_117_rest_of_the_debate():
 
         ## asks question
         retval = debate.can_send(antagonist)
-        exp_retval = 1
+        exp_retval = TYPE_QUESTION
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(antagonist, retval, 'user2 q')
@@ -373,7 +380,7 @@ def test_117_rest_of_the_debate():
 
         ## user1 replies
         retval = debate.can_send(mjt)
-        exp_retval = 1
+        exp_retval = TYPE_REPLY
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
         debate.send(mjt, retval, 'user1 re')
