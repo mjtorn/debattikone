@@ -114,8 +114,8 @@ class Debate(models.Model):
 
             # Makes assumptions about numbers :(
             opening_messages = [m for m in messages if m.argument_type == 0]
-            normal_messages = [m for m in messages if m.argument_type == 1]
-            closing_messages = [m for m in messages if m.argument_type == 2]
+            normal_messages = [m for m in messages if m.argument_type in (1, 2)]
+            closing_messages = [m for m in messages if m.argument_type == 3]
 
             len_opening = len(opening_messages)
             len_normal = len(normal_messages)
