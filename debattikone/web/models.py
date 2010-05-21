@@ -13,6 +13,12 @@ from django.template.loader import render_to_string
 
 # Create your models here.
 
+TYPE_NOTHING = None
+TYPE_OPEN = 0
+TYPE_QUESTION = 1
+TYPE_REPLY = 2
+TYPE_CLOSING = 3
+
 class Topic(models.Model):
     title = models.CharField(max_length=64)
     summary = models.CharField(max_length=1024)
@@ -90,8 +96,9 @@ class Debate(models.Model):
         """Return what type of message user can send
         None - nothing
         0 - opening
-        1 - normal
-        2 - closing
+        1 - question
+        2 - answer
+        3 - closing
         """
 
         # Users must be set
@@ -115,10 +122,10 @@ class Debate(models.Model):
                 # User1 or User2 starts, no matter which
                 if self.user1 == user:
                     if not self.user1 in [m.user for m in opening_messages]:
-                        return 0
+                        return TYPE_OPEN
                 elif self.user2 == user:
                     if not self.user2 in [m.user for m in opening_messages]:
-                        return 0
+                        return TYPE_OPEN
                 return None
 
             if len_normal < self.msg_limit:
@@ -127,29 +134,29 @@ class Debate(models.Model):
                     return None
                 # user1 starts
                 elif not len_normal and user == self.user1:
-                    return 1
+                    return TYPE_QUESTION
                 # One message means user2 replies
                 elif len_normal == 1:
                     if normal_messages[-1].user != user:
-                        return 1
+                        return TYPE_REPLY
                 elif len_normal >= 2:
                     # user1 asked and user2 replied, user2's turn
                     if normal_messages[-2].user != normal_messages[-1].user:
                         if normal_messages[-1].user == user:
-                            return 1
+                            return TYPE_QUESTION
 
                     # user2 replied, asked new question, user1's turn
                     if normal_messages[-2].user == normal_messages[-1].user:
                         if normal_messages[-1].user != user:
-                            return 1
+                            return TYPE_REPLY
 
-                return None
+                return TYPE_NOTHING
 
             if len_normal == self.msg_limit:
                 if len_closing < 3:
-                    return 2
+                    return TYPE_CLOSING
 
-        return None
+        return TYPE_NOTHING
 
     def is_closed(self):
         return self.debatemessage_set.count() == self.msg_limit
