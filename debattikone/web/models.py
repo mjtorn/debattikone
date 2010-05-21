@@ -180,6 +180,11 @@ class Debate(models.Model):
 
         return msg
 
+    def get_table(self):
+        debate_table = []
+
+        return debate_table
+
     ## Email section
     def email_invite(self):
         ctx = {
