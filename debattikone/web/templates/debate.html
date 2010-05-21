@@ -12,16 +12,20 @@
 		<br />
 		Älä vielä aloita kuitenkaan debatointia vastapuolen kanssa, vaan kerro esimerkiksi mistä tai miksi lähestyt tätä keskustelua. Usein kannattaa myös määritellä sanat joita aiot käyttää, ettei tule väärinkäsityksiä.
 		{% else %}{% if debate|can_send:user == 1 %}
-		Saat kysyä kysymyksen tai vastata.
+		Saat kysyä kysymyksen.
 		<br />
-		Debattikone ei varsinaisesti pakota sinua käyttämään tätä puheenvuoroa tietyllä tavalla, mutta huomioithan, että jos viimeksi vastasit kysymykseen, voit kysyä oman kysymyksesi.
+		Tämän jälkeen vastapuoli esittää vastauksen, ja oman kysymyksensä.
 		{% else %}{% if debate|can_send:user == 2 %}
+		Sinun vuorosi vastata.
+		<br />
+		Tämän jälkeen saat esittää uuden kysymyksen vastapuolellesi.
+		{% else %}{% if debate|can_send:user == 3 %}
 		Loppuargumentin vuoro.
 		<br />
 		Olette nyt käyneet koko debatin läpi ja on aika sulkea. Mitä ikinä viimeisiä ajatuksia on, joita haluaa yleisölle tai toiselle osapuolelle selvittää ilman, että siihen tulee vastauksia, kannattaa tehdä nyt.
 		<br />
 		Debattikone kiittää ja huomauttaa, että voitte tehdä uuden debatin ja jatkaa jos siltä tuntuu. Kuvaukseen voi laittaa linkin tähän debattiin!
-		{% endif %}{% endif %}{% endif %}{% endif %}
+		{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 		</td>
 	</tr>
 
