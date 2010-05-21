@@ -5,7 +5,9 @@
 <table>
 	<tr>
 		<td colspan="2">
-		{% if debate|can_send:user == None %}
+		{% if debate.is_closed %}
+		Debatti on päättynyt, Debattikone kiittää osallistumisestanne!
+		{% else %}{% if debate|can_send:user == None %}
 		Puheenvuoro on toisella osapuolella
 		{% else %}{% if debate|can_send:user == 0 %}
 		Voit esittää avausargumenttisi.
@@ -25,7 +27,7 @@
 		Olette nyt käyneet koko debatin läpi ja on aika sulkea. Mitä ikinä viimeisiä ajatuksia on, joita haluaa yleisölle tai toiselle osapuolelle selvittää ilman, että siihen tulee vastauksia, kannattaa tehdä nyt.
 		<br />
 		Debattikone kiittää ja huomauttaa, että voitte tehdä uuden debatin ja jatkaa jos siltä tuntuu. Kuvaukseen voi laittaa linkin tähän debattiin!
-		{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
+		{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 		</td>
 	</tr>
 
