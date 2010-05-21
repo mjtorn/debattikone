@@ -48,6 +48,9 @@ class DebateMessage(models.Model):
     argument_type = models.IntegerField(choices=((0, 'Opening argument'), (1, 'Question'), (2, 'Reply'), (3, 'Closing argument')))
     argument = models.TextField()
 
+    def __unicode__(self):
+        return self.argument
+
 
 class Debate(models.Model):
     topic = models.ForeignKey(Topic)
