@@ -395,6 +395,55 @@ def test_117_rest_of_the_debate():
     count = len([m for m in messages if m.argument_type in (1, 2)])
     assert count == msg_limit, '%s != %s' % (count, msg_limit)
 
+def test_118_finalize_debate():
+    """Users present their closing arguments
+    """
+
+    mjt = auth_models.User.objects.get(username='mjt')
+    antagonist = auth_models.User.objects.get(username='antagonist')
+    
+    ## Test both can close
+    retval = debate.can_send(mjt)
+    exp_retval = TYPE_CLOSING
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    retval = debate.can_send(antagonist)
+    exp_retval = TYPE_CLOSING
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    ## User1 does so
+    u1c = 'user1 closes'
+    debate.send(mjt, TYPE_CLOSING, u1c)
+
+    retval = debate.get_table()
+    exp_state.append([u1c, ''])
+    assert retval == exp_state, 'Table mismatch, %s' % retval
+
+    # User1 tries again
+    retval = debate.can_send(mjt)
+    exp_retval = TYPE_NOTHING
+    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+    # Forcibly sends
+    u1c = 'user1 closes'
+    debate.send(mjt, TYPE_CLOSING, u1c)
+
+    # Still a fail
+    retval = debate.get_table()
+    #exp_state.append([u1c, ''])
+    assert retval == exp_state, 'Table mismatch, %s' % retval
+
+    ## User2 closes
+    u2c = 'user2 closes'
+    debate.send(antagonist, TYPE_CLOSING, u2c)
+
+    retval = debate.get_table()
+
+    # Update the state
+    exp_state[-1][1] = u2c
+    assert retval == exp_state, 'Table mismatch, %s' % retval
+
+
 def test_200_hax_other_debate():
     """This would never happen irl, but edit second debate's msg_limit
     """
