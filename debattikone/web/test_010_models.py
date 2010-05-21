@@ -313,7 +313,7 @@ def test_116_user2_first_q_and_user1_re():
 
     ## Now we should have two questions and two answers
     messages = debate.debatemessage_set.all()
-    normal_messages = [m for m in messages if m.argument_type == 1]
+    normal_messages = [m for m in messages if m.argument_type in (1, 2)]
     assert len(normal_messages) == 4, '%d != 4 normals' % len(normal_messages)
 
 def test_117_rest_of_the_debate():
@@ -327,14 +327,14 @@ def test_117_rest_of_the_debate():
     msg_limit = debate.msg_limit
 
     messages = debate.debatemessage_set.all()
-    normal_messages = [m for m in messages if m.argument_type == 1]
+    normal_messages = [m for m in messages if m.argument_type in (1, 2)]
 
     # Symbolize page loads
     i = 0
     while True:
         i += 1
         messages = debate.debatemessage_set.all()
-        normal_messages = [m for m in messages if m.argument_type == 1]
+        normal_messages = [m for m in messages if m.argument_type in (1, 2)]
 
         if len(normal_messages) >= msg_limit:
             break
@@ -392,7 +392,7 @@ def test_117_rest_of_the_debate():
         assert retval == exp_state, 'Table mismatch'
 
     messages = debate.debatemessage_set.all()
-    count = len([m for m in messages if m.argument_type == 1])
+    count = len([m for m in messages if m.argument_type in (1, 2)])
     assert count == msg_limit, '%s != %s' % (count, msg_limit)
 
 def test_200_hax_other_debate():
