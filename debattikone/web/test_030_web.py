@@ -211,14 +211,20 @@ def test_112_open():
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
     # Post opening
+    u2o = 'This is user2 opening the debate'
     data = {
-        'message': 'This is user2 opening the debate',
+        'message': u2o,
     }
     res = c.post(current_location, data)
 
     exp_retval = 302
     retval = res.status_code
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
+
+    ## Test d2 got correct table in db
+    retval = d2.get_table()
+    exp_retval = [['', u2o]]
+    assert retval == exp_retval, 'Table mismatch'
 
     ## Test fail other opening
     data = {
