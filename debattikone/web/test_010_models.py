@@ -298,7 +298,7 @@ def test_116_user2_first_q_and_user1_re():
     assert retval == exp_retval, 'Table mismatch'
 
     retval = debate.can_send(mjt)
-    exp_retval = TYPE_ANSWER
+    exp_retval = TYPE_REPLY
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u1r1'] = 'user1 first re'
