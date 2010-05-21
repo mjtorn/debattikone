@@ -131,7 +131,7 @@ class Debate(models.Model):
                         return TYPE_OPEN
                 return None
 
-            if len_normal < self.msg_limit:
+            elif len_normal < self.msg_limit:
                 # Can not present first question out of order
                 if not len_normal and user != self.user1:
                     return None
@@ -151,9 +151,13 @@ class Debate(models.Model):
 
                 return TYPE_NOTHING
 
-            if len_normal == self.msg_limit:
-                if len_closing < 3:
-                    return TYPE_CLOSING
+            elif len_closing < 2:
+                if self.user1 == user:
+                    if not self.user1 in [m.user for m in closing_messages]:
+                        return TYPE_CLOSING
+                elif self.user2 == user:
+                    if not self.user2 in [m.user for m in closing_messages]:
+                        return TYPE_CLOSING
 
         return TYPE_NOTHING
 
