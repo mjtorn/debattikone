@@ -193,7 +193,8 @@ def test_111_user1_opens():
     exp_retval = 0
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-    debate.send(mjt, retval, 'user1 opening argument')
+    globals()['user1_open_arg'] = 'user1 opening argument'
+    debate.send(mjt, retval, user1_open_arg)
 
 def test_112_user2_presents_open():
     """user2 presents his opening argument
@@ -205,7 +206,8 @@ def test_112_user2_presents_open():
     exp_retval = 0
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-    debate.send(antagonist, retval, 'user2 opening argument')
+    globals()['user2_open_arg'] = 'user2 opening argument'
+    debate.send(antagonist, retval, user2_open_arg)
 
     print [s.argument_type for s in debate.debatemessage_set.all()]
 
@@ -225,7 +227,8 @@ def test_113_user1_first_q():
     exp_retval = 1
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-    debate.send(mjt, retval, 'user1 first question')
+    globals()['u1q1'] = 'user1 first question'
+    debate.send(mjt, retval, u1q1)
 
 def test_114_user2_first_re():
     """User 2 tests can_send, can send a normal, answers the
@@ -238,7 +241,8 @@ def test_114_user2_first_re():
     exp_retval = 1
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-    debate.send(antagonist, retval, 'user2 first re')
+    globals()['u2r1'] = 'user2 first re'
+    debate.send(antagonist, retval, u2r1)
 
 def test_115_user1_out_of_turn():
     """User 1 tests can_send, sees can not send (user2's turn)
@@ -263,13 +267,15 @@ def test_116_user2_first_q_and_user1_re():
     exp_retval = 1
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-    debate.send(antagonist, retval, 'user2 first q')
+    globals()['u2q1'] = 'user2 first q'
+    debate.send(antagonist, retval, u2q1)
 
     retval = debate.can_send(mjt)
     exp_retval = 1
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-    debate.send(mjt, retval, 'user1 first re')
+    globals()['u1r1'] = 'user1 first re'
+    debate.send(mjt, retval, u1r1)
 
     ## Now we should have two questions and two answers
     messages = debate.debatemessage_set.all()
