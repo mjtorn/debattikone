@@ -183,6 +183,48 @@ class Debate(models.Model):
     def get_table(self):
         debate_table = []
 
+        messages = self.debatemessage_set.all().order_by('id')
+
+        row = ['', '']
+        prev_user = None
+        for i in xrange(len(messages)):
+            ## Set up message
+            message = messages[i]
+            try:
+                next_message = messages[i + 1]
+            except IndexError:
+                next_message = None
+
+            ## Set up row
+            if message.user == self.user1:
+                row_idx = 0
+            else:
+                row_idx = 1
+
+            ## Where to go
+            row[row_idx] = message.argument
+
+            # Flush if last message
+            if next_message is None:
+                debate_table.append(row)
+            else:
+                if next_message.argument_type != message.argument_type:
+                    debate_table.append(row)
+                    row = ['', '']
+                else:
+                    if not '' in row:
+                        debate_table.append(row)
+                        row = ['', '']
+                    elif message.user == prev_user:
+                        debate_table.append(row)
+                        row = ['', '']
+                    else:
+                        print 'KWAAK', message.user
+
+            prev_user = message.user
+
+        for row in debate_table:
+            print row
         return debate_table
 
     ## Email section
