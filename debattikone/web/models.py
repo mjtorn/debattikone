@@ -192,7 +192,6 @@ class Debate(models.Model):
         messages = self.debatemessage_set.all().order_by('id')
 
         row = ['', '']
-        prev_user = None
         for i in xrange(len(messages)):
             ## Set up message
             message = messages[i]
@@ -215,22 +214,16 @@ class Debate(models.Model):
                 debate_table.append(row)
             else:
                 if next_message.argument_type != message.argument_type:
+                    if message.argument_type == TYPE_OPEN:
+                        debate_table.append(row)
+                        row = ['', '']
+                        
+                if message.argument_type in (TYPE_QUESTION, TYPE_REPLY):
                     debate_table.append(row)
                     row = ['', '']
-                else:
-                    if not '' in row:
-                        debate_table.append(row)
-                        row = ['', '']
-                    elif message.user == prev_user:
-                        debate_table.append(row)
-                        row = ['', '']
-                    else:
-                        print 'KWAAK', message.user
 
-            prev_user = message.user
-
-        for row in debate_table:
-            print row
+        #for row in debate_table:
+        #    print row
         return debate_table
 
     ## Email section
