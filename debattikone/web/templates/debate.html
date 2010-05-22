@@ -2,13 +2,22 @@
 {% load debattikone_filters %}
 
 {% block content %}
+<p>
+	{{ debate.topic.summary }}
+</p>
+
 <table>
 	<tr>
 		<td colspan="2">
-		{% if debate.is_closed %}
+		{% if debate.is_pending %}
+		Debatti odottaa toista osallistujaa.
+		{% if debate.invited %}
+		{{ debate.invited }} on kutsuttu.
+		{% endif %}
+		{% else %}{% if debate.is_closed %}
 		Debatti on päättynyt, Debattikone kiittää osallistumisestanne!
 		{% else %}{% if debate|can_send:user == None %}
-		Puheenvuoro on toisella osapuolella
+		Puheenvuoro on toisella osapuolella.
 		{% else %}{% if debate|can_send:user == 0 %}
 		Voit esittää avausargumenttisi.
 		<br />
@@ -27,15 +36,18 @@
 		Olette nyt käyneet koko debatin läpi ja on aika sulkea. Mitä ikinä viimeisiä ajatuksia on, joita haluaa yleisölle tai toiselle osapuolelle selvittää ilman, että siihen tulee vastauksia, kannattaa tehdä nyt.
 		<br />
 		Debattikone kiittää ja huomauttaa, että voitte tehdä uuden debatin ja jatkaa jos siltä tuntuu. Kuvaukseen voi laittaa linkin tähän debattiin!
-		{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
+		{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 		</td>
 	</tr>
 
+	{% if not debate.is_pending %}
 	<tr>
 		<th>{{ debate.user1 }}</th><th>{{ debate.user2 }}</th>
 	</tr>
+	{% endif %}
 
 	{% if not debate_table and request.user.id %}
+	{% if not debate.is_pending and not debate.is_closed %}
 	<tr><td colspan="2">
 		<form method="post" action="">
 		{% csrf_token %}
@@ -43,6 +55,7 @@
 		<button type="submit" name="submit" value="submit">Lähetä viesti</button>
 		</form>
 	</td></tr>
+	{% endif %}
 	{% else %}
 	{% for row in debate_table %}
 	<tr>
