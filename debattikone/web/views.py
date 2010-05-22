@@ -130,6 +130,7 @@ def new_debate(request, slug=None):
     new_debate_form = forms.NewDebateForm(data=data, initial=initial)
 
     if new_debate_form.is_bound:
+        new_debate_form.data['request_user'] = request.user
         if new_debate_form.is_valid():
             new_debate_form.cleaned_data['user'] = request.user
             debate = new_debate_form.save()

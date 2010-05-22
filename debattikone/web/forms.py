@@ -83,7 +83,7 @@ class NewDebateForm(forms.Form):
         invite_random = self.data.get('invite_random', False)
         if invite_random:
             from django.db.models import F
-            user = self.data['user']
+            user = self.data['request_user']
             invited = auth_models.User.objects.all().order_by('?')
             invited = invited.exclude(id=user.id)
             invited = invited.exclude(debate_invited_set__invited__username=F('username'))
@@ -94,6 +94,9 @@ class NewDebateForm(forms.Form):
                 raise forms.ValidationError('Satunnaista vastapuolta ei löydetty')
         else:
             invited = self.cleaned_data.get('invited', None)
+            if self.data['request_user'] == self.cleaned_data['invited']:
+                raise forms.ValidationError('Et voi kutsua itseäsi')
+
 
         debate = get_object_or_None(models.Debate, topic=self.cleaned_data['topic'], invited=invited)
 
