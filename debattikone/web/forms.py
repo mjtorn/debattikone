@@ -15,7 +15,6 @@ REG_ERRS = {
     'max_length': 'Korkeintaan %(limit_value)d merkkiä, kiitos (Nyt on %(show_value)d)',
 }
 
-@autostrip
 class RegisterForm(forms.Form):
     username = forms.fields.CharField(label='Käyttäjätunnus', max_length=32, error_messages=REG_ERRS)
     email = forms.fields.EmailField(label='Sähköposti', error_messages=REG_ERRS)
@@ -38,9 +37,9 @@ class RegisterForm(forms.Form):
         user.save()
 
         return user
+RegisterForm = autostrip(RegisterForm)
 
 
-@autostrip
 class LoginForm(forms.Form):
     l_username = forms.fields.CharField(label='Käyttäjätunnus', max_length=32, error_messages=REG_ERRS)
     l_password = forms.fields.CharField(label='Salasana', widget=forms.widgets.PasswordInput())
@@ -53,8 +52,9 @@ class LoginForm(forms.Form):
 
         self.cleaned_data['user'] = user
         return self.cleaned_data
+LoginForm = autostrip(LoginForm)
 
-@autostrip
+
 class NewTopicForm(forms.Form):
     title = forms.fields.CharField(label='Otsikko', max_length=64, error_messages=REG_ERRS)
     summary = forms.fields.CharField(label='Yhteenveto', max_length=1024, widget=forms.widgets.Textarea(), error_messages=REG_ERRS)
@@ -67,9 +67,9 @@ class NewTopicForm(forms.Form):
         topic.save()
 
         return topic
+NewTopicForm = autostrip(NewTopicForm)
 
 
-@autostrip
 class NewDebateForm(forms.Form):
     topic = forms.models.ModelChoiceField(models.Topic.objects.all().order_by('slug'), label='Aihe', empty_label=None, error_messages=REG_ERRS)
     invited = forms.models.ModelChoiceField(auth_models.User.objects.all().order_by('username'), label='Kutsu käyttäjä', required=False, error_messages=REG_ERRS)
@@ -118,9 +118,9 @@ class NewDebateForm(forms.Form):
         debate.save()
 
         return debate
+NewDebateForm = autostrip(NewDebateForm)
 
 
-@autostrip
 class DebateMessageForm(forms.Form):
     message = forms.fields.CharField(label='Viesti', widget=forms.widgets.Textarea())
 
@@ -146,6 +146,7 @@ class DebateMessageForm(forms.Form):
         argument = self.cleaned_data['message']
 
         return debate.send(user, argument_type, argument)
+DebateMessageForm = autostrip(DebateMessageForm)
 
 # EOF
 
