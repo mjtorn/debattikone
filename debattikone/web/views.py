@@ -165,7 +165,7 @@ def debate(request, debate_id, slug):
         'debate': debate,
         'debate_message_form': debate_message_form,
         'debate_table': debate_table,
-        'title': debate.topic.title,
+        'title': debate.topic.title, 
     }
     req_ctx = RequestContext(request, context)
     return render_login('debate.html', req_ctx)
@@ -173,9 +173,12 @@ def debate(request, debate_id, slug):
 def debate_list(request, filter=None):
     debates = models.Debate.objects.all().select_related(depth=1).order_by('-id')
 
+    from django.db.models import Q
+    invite = Q(invited__isnull=True) | Q(invited=request.user)
+
     ## FIXME: Do this horrible thing in sql plz
     if filter == 'open':
-        debates = debates.filter(user2__isnull=True, invited__isnull=True)
+        debates = debates.filter(invite, user2__isnull=True)
         debates = [d for d in debates if not d.is_closed()]
     elif filter == 'current':
         debates = debates.exclude(user2__isnull=True)
