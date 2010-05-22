@@ -1,16 +1,18 @@
 		{% if not request.user.id %}
 		<form action="" method="post">
 		{% csrf_token %}
-		{{ login_form.as_p }}
+		{% include "tags/login.html" %}
 		<br />
 		<button name="login" value="login">Kirjaudu</button>
 		<br />
 		tai
 		<br />
-		{{ register_form.as_p }}
+		{% include "tags/register.html" %}
 		<button name="register" value="register">Rekisteröidy</button>
 		</form>
 		{% else %}
-		{{ request.user }} (<a href="{% url logout %}?next={{ request.META.PATH_INFO }}">Kirjaudu ulos</a>)
+		{{ request.user }}
+		<br />
+		(<a href="{% url logout %}?next={{ request.META.PATH_INFO }}">Kirjaudu ulos</a>)
 		{% endif %}
 
