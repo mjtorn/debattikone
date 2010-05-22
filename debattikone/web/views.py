@@ -13,6 +13,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
+import datetime
+
 # Decorators
 
 def has_login(func):
@@ -55,6 +57,7 @@ def has_login(func):
 
         req_ctx['login_form'] = login_form
         req_ctx['register_form'] = register_form
+        req_ctx['now'] = datetime.datetime.now()
         return func(*args, **kwargs)
     return wrap
 
