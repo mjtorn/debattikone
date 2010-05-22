@@ -167,6 +167,9 @@ class Debate(models.Model):
     def is_closed(self):
         return self.debatemessage_set.count() == self.msg_limit + 2 + 2
 
+    def is_pending(self):
+        return self.user2 is None and self.invited is not None
+
     def invite(self, user):
         self.invited = user
         self.save()
