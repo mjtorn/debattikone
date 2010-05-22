@@ -55,7 +55,7 @@ setup(
     packages = packages,
 #    package_data = package_data, # MANIFEST.in where available
     include_package_data = True,
-    long_description = '%s.' % name
+    long_description = '%s.' % NAME
 )
 
 # EOF
