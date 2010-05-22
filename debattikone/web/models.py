@@ -84,6 +84,9 @@ class Debate(models.Model):
         return True
 
     def can_participate(self, user):
+        if not user.id:
+            return False
+
         if self.user1 == user or self.user2 == user:
             return False
 
