@@ -44,5 +44,18 @@ a {
 	text-decoration: none;
 	color: #343434;
 }
+
+#left {
+	position: absolute;
+	border-right: 1px solid #616161;
+	width: 200px;
+}
+
+#content {
+	position: absolute;
+	margin-left: 220px;
+	margin-top: 70px;
+}
+
 /* EOF */
 
