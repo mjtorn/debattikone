@@ -19,9 +19,15 @@ Toisen käyttäjän liityttyä molemmat esittävät avausargumentin, jonka jälk
 		{% include "tags/login.html" %}
 		</div>
 	{% else %}
+		{% if not count %}
+		<p>
+		Sivulla ei ole vielä aiheita. Voit luoda uuden <a href="{% url new_topic %}">täältä</a>.
+		</p>
+		{% else %}
 		{{ new_debate_form.as_p }}
 		<br />
 		<button name="new_debate" value="create">Luo uusi</button>
+		{% endif %}
 	{% endif %}
 		</form>
 

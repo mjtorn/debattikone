@@ -116,6 +116,8 @@ def new_debate(request, slug=None):
     if slug:
         topic = get_object_or_404(models.Topic, slug=slug)
 
+    count = models.Topic.objects.count()
+
     data = request.POST.copy() or None
 
     if slug:
@@ -136,6 +138,7 @@ def new_debate(request, slug=None):
 
     context = {
         'new_debate_form': new_debate_form,
+        'count': count,
         'title': 'Uusi debatti',
     }
     req_ctx = RequestContext(request, context)

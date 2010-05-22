@@ -13,7 +13,7 @@ TIME_ZONE = 'Europe/Helsinki'
 LANGUAGE_CODE = 'fi'
 
 DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
-DATABASES['default']['NAME'] = '/home/mjt/tmp/debattikone.db'
+DATABASES['default']['NAME'] = '/home/mjt/tmp/debattikone2.db'
 
 TEST_RUNNER = 'django_nose.run_tests'
 
