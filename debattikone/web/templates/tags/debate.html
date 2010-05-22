@@ -5,7 +5,7 @@
 {{ debate.topic.summary }}
 </p>
 
-(<a href="{% url debate debate.id debate.topic.slug %}">avaa</a>)
+(<a href="{% url debate debate.id debate.topic.slug %}">Lue</a>)
 
 {% if debate|can_participate:user %}
 (<a href="{% url participate debate.id debate.topic.slug %}">Osallistu</a>)
