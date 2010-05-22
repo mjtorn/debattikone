@@ -44,6 +44,10 @@
 	</div>
 
 	<div id="content">
+{% if title %}
+<h3>{{ title }}</h3>
+{% endif %}
+
 	{% block content %}
 	{% endblock %}
 	</div>
