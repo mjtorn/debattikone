@@ -132,7 +132,7 @@ def new_debate(request, slug=None):
             new_debate_form.cleaned_data['user'] = request.user
             debate = new_debate_form.save()
 
-            return HttpResponseRedirect(reverse('debate', args=(debate.id, topic.slug)))
+            return HttpResponseRedirect(reverse('debate', args=(debate.id, debate.topic.slug)))
 
     context = {
         'new_debate_form': new_debate_form,
@@ -165,6 +165,7 @@ def debate(request, debate_id, slug):
         'debate': debate,
         'debate_message_form': debate_message_form,
         'debate_table': debate_table,
+        'title': debate.topic.title,
     }
     req_ctx = RequestContext(request, context)
     return render_login('debate.html', req_ctx)
