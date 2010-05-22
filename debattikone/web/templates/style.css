@@ -18,12 +18,31 @@ body {
 	text-align: center;
 	text-transform: uppercase;
 	letter-spacing: 0.2em;
-	border-bottom: 1px solid #616161;
 }
 
 #date {
 	font-family: 'Times New Roman';
 	margin-top: 5px;
-	border-bottom: 1px solid #616161;
+	margin-left: 16pt;
 }
+
+#top_menu {
+	margin-top: 5px;
+}
+
+#top_menu a {
+	margin-top: 5px;
+	margin: 16pt;
+}
+
+#top_menu a:hover {
+	text-decoration: underline;
+}
+
+a {
+	font-family: 'Georgia', 'Times New Roman';
+	text-decoration: none;
+	color: #343434;
+}
+/* EOF */
 
