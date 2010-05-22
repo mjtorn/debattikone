@@ -174,7 +174,9 @@ def debate_list(request, filter=None):
     debates = models.Debate.objects.all().select_related(depth=1).order_by('-id')
 
     from django.db.models import Q
-    invite = Q(invited__isnull=True) | Q(invited=request.user)
+    invite = Q(invited__isnull=True)
+    if request.user.id:
+        invite |= Q(invited=request.user)
 
     ## FIXME: Do this horrible thing in sql plz
     if filter == 'open':
