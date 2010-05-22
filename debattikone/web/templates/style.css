@@ -58,5 +58,18 @@ a {
 	margin-top: 40px;
 }
 
+#content h3 {
+	font-family: 'Times New Roman';
+	font-size: 24px;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+}
+
+#content p {
+	font-family: 'Georgia', 'Times New Roman';
+}
+
 /* EOF */
 
