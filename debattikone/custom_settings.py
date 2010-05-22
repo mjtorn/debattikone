@@ -10,6 +10,7 @@ ADMINS = (
 )
 
 TIME_ZONE = 'Europe/Helsinki'
+LANGUAGE_CODE = 'fi'
 
 DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 DATABASES['default']['NAME'] = '/home/mjt/tmp/debattikone.db'
