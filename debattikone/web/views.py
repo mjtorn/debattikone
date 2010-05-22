@@ -79,7 +79,7 @@ def index(request):
     try:
         debate = models.Debate.objects.all().order_by('?')[0]
     except IndexError:
-        debate = 'kala' #None
+        debate = None
 
     context = {
         'debate': debate,
