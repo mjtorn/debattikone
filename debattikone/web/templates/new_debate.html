@@ -15,8 +15,8 @@ Toisen käyttäjän liityttyä molemmat esittävät avausargumentin, jonka jälk
 		<form action="" method="post">
 		{% csrf_token %}
 	{% if not request.user.id %}
-		<div class="login_and_register">
-		{% include "tags/login_and_register.html" %}
+		<div style="margin-left: 10%;">
+		{% include "tags/login.html" %}
 		</div>
 	{% else %}
 		{{ new_debate_form.as_p }}
