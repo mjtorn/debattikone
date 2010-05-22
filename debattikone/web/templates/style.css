@@ -51,10 +51,14 @@ a {
 	width: 200px;
 }
 
+#left p.left {
+	font-size: 12px;
+}
+
 #content {
 	position: absolute;
 	margin-left: 220px;
-	margin-top: 70px;
+	margin-top: 40px;
 }
 
 /* EOF */
