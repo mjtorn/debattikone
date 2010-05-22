@@ -14,6 +14,9 @@
 		{% if debate.invited %}
 		{{ debate.invited }} on kutsuttu.
 		{% endif %}
+{% if debate|can_participate:user %}
+(<a href="{% url participate debate.id debate.topic.slug %}">Osallistu</a>)
+{% endif %}
 		{% else %}{% if debate.is_closed %}
 		Debatti on päättynyt, Debattikone kiittää osallistumisestanne!
 		{% else %}{% if debate|can_send:user == None %}
