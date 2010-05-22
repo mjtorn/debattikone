@@ -1,2 +1,19 @@
-		{{ new_topic_form.as_p }}
+		{% for field in new_topic_form %}
+		<br />
+		{{ field.label }}
+		<br  />
+		{{ field }}
+		{% if field.errors %}
+		<span style="color: red;">{{ field.errors|join:", " }}</span>
+		{% endif %}
+		{% endfor %}
 
+		{% if new_topic_form.errors %}
+		<span style="color: red;">{{ new_topic_form.errors|join:", " }}</span>
+		{% endif %}
+
+		<br />
+
+		<input type="checkbox" name="debate" value="debate" checked="checked" /> Haluan debatoida aiheesta.
+		<br />
+		<button name="new_topic" value="create">Luo uusi</button>
