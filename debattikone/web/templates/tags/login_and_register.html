@@ -2,11 +2,7 @@
 		<form action="" method="post">
 		{% csrf_token %}
 		{% include "tags/login.html" %}
-		<br />
-		<button name="login" value="login">Kirjaudu</button>
-		<br />
-		tai
-		<br />
+		<hr />
 		{% include "tags/register.html" %}
 		<button name="register" value="register">Rekisteröidy</button>
 		</form>

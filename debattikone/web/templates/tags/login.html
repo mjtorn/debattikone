@@ -1,2 +1,17 @@
-		{{ login_form.as_p }}
+		{% for field in login_form %}
+		<br />
+		{{ field.label }}
+		<br  />
+		{{ field }}
+		{% if field.errors %}
+		<span style="color: red;">{{ field.errors|join:", " }}</span>
+		{% endif %}
+		{% endfor %}
+
+		{% if form.errors %}
+		<span style="color: red;">{{ form.errors|join:", " }}</span>
+		{% endif %}
+
+		<br />
+		<button name="login" value="login">Kirjaudu</button>
 
