@@ -124,6 +124,10 @@ def test_015_register_new():
 
     assert_redirects(res, reverse('debate', args=('1', 'x')))
 
+    # 302 -> re-GET
+    res = c.get(reverse('debate', args=('1', 'x')))
+    assert_contains(res, 'fourth')
+
 def test_110_test_follow():
     """antagonist loads the front page, the first debate, and follows
     """
