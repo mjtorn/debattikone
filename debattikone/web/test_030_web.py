@@ -14,6 +14,8 @@ from django.test import Client
 
 from debattikone.web import models
 
+from django_nose.assertions import *
+
 import simplejson
 
 #fixtures = ['test_data.json']
@@ -86,9 +88,7 @@ def test_013_login_ok():
 
     res = c.post(reverse('index'), data)
 
-    retval = res.status_code
-    exp_retval = 302
-    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
+    assert_redirects(res, reverse('index'))
 
 def test_014_logout_ok():
     """antagonist logs out
@@ -122,9 +122,7 @@ def test_015_register_new():
 
     globals()['user2'] = auth_models.User.objects.get(username='fourth')
 
-    exp_retval = 302
-    retval = res.status_code
-    assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+    assert_redirects(res, reverse('debate', args=('1', 'x')))
 
 def test_110_test_follow():
     """antagonist loads the front page, the first debate, and follows
@@ -182,9 +180,7 @@ def test_111_participate():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     # and redireced out
-    exp_retval = 302
-    retval = res.status_code
-    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
+    assert_redirects(res, reverse('debate', args=(d2.id, d2.topic.slug)))
 
     # Only one message as the invite was done before box reset
     retval = len(mail.outbox)
@@ -192,9 +188,7 @@ def test_111_participate():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     # Accidentally try to participate again
-    exp_retval = 302
-    retval = res.status_code
-    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
+    assert_redirects(res, reverse('debate', args=(d2.id, d2.topic.slug)))
 
 
 def test_112_open():
@@ -217,9 +211,7 @@ def test_112_open():
     }
     res = c.post(current_location, data)
 
-    exp_retval = 302
-    retval = res.status_code
-    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
+    assert_redirects(res, current_location)
 
     ## Test d2 got correct table in db
     retval = d2.get_table()
