@@ -147,6 +147,7 @@ def test_201_success_new_debate_no_invite():
     }
 
     form = forms.NewDebateForm(data)
+    form.data['request_user'] = mjt
     assert form.is_valid(), form.errors
     form.cleaned_data['user'] = mjt
     form.save()
@@ -157,6 +158,7 @@ def test_201_fail_duplicate_debate_no_invite():
     }
 
     form = forms.NewDebateForm(data)
+    form.data['request_user'] = mjt
     assert not form.is_valid(), 'Should fail'
     print form.errors
 
@@ -170,6 +172,7 @@ def test_202_success_new_debate_invite():
     }
 
     form = forms.NewDebateForm(data)
+    form.data['request_user'] = mjt
     assert form.is_valid(), form.errors
     form.cleaned_data['user'] = mjt
     globals()['invite_debate'] = form.save()
@@ -186,6 +189,7 @@ def test_203_success_new_debate_invite_random():
     }
 
     form = forms.NewDebateForm(data)
+    form.data['request_user'] = mjt
     assert form.is_valid(), form.errors
     form.cleaned_data['user'] = mjt
     form.save()
@@ -200,6 +204,7 @@ def test_204_fail_new_debate_no_more_randoms():
     }
 
     form = forms.NewDebateForm(data)
+    form.data['request_user'] = mjt
     assert not form.is_valid(), 'Should have no more randoms'
 
 ## Until we have good view tests
