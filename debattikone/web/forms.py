@@ -44,14 +44,16 @@ class LoginForm(forms.Form):
     l_username = forms.fields.CharField(label='Käyttäjätunnus', max_length=32, error_messages=REG_ERRS)
     l_password = forms.fields.CharField(label='Salasana', widget=forms.widgets.PasswordInput())
 
-    def clean(self):
-        user = get_object_or_None(auth_models.User, username=self.cleaned_data['l_username'])
+    def clean_l_username(self):
+        user = get_object_or_None(auth_models.User, username=self.data['l_username'])
 
         if user is None:
             raise forms.ValidationError('Virheellinen käyttäjätunnus')
 
+        # meh..
         self.cleaned_data['user'] = user
-        return self.cleaned_data
+
+        return user.username
 LoginForm = autostrip(LoginForm)
 
 
