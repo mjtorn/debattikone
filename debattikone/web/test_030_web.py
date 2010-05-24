@@ -70,6 +70,8 @@ def test_012_login_bad_name():
     exp_retval = 200
     assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
 
+    assert_form_error(res, 'login_form', 'l_username', 'Virheellinen käyttäjätunnus')
+
 def test_013_login_ok():
     """antagonist finally logs in
     """
