@@ -55,7 +55,7 @@
 		<form method="post" action="">
 		{% csrf_token %}
 		{{ debate_message_form.as_p }}
-		<button type="submit" name="submit" value="submit">Lähetä viesti</button>
+		<input type="submit" name="submit" value="Lähetä viesti "/>
 		</form>
 	</td></tr>
 	{% endif %}
@@ -74,7 +74,7 @@
 		<form method="post" action="">
 		{% csrf_token %}
 		{{ debate_message_form.as_p }}
-		<button type="submit" name="submit" value="submit">Lähetä viesti</button>
+		<input type="submit" name="submit" value="Lähetä viesti" />
 		</form>
 	</td></tr>
 	{% endif %}
