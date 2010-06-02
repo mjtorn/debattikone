@@ -9,8 +9,16 @@
 <table>
 	<tr>
 		<td colspan="2">
-		{% if debate.is_pending %}
+		{% if debate.is_pending and debate|can_send:user == 0 %}
 		Debatti odottaa toista osallistujaa.
+		<br />
+		Voit siitä huolimatta esittää avausargumenttisi
+		<br />
+		<form method="post" action="">
+		{% csrf_token %}
+		{{ debate_message_form.as_p }}
+		<input type="submit" name="submit" value="Lähetä viesti "/>
+		</form>
 		{% if debate.invited %}
 		{{ debate.invited }} on kutsuttu.
 		{% endif %}
@@ -20,7 +28,11 @@
 		{% else %}{% if debate.is_closed %}
 		Debatti on päättynyt, Debattikone kiittää osallistumisestanne!
 		{% else %}{% if debate|can_send:user == None %}
+			{% if debate.is_pending %}
+		Debatti odottaa toista osallistujaa.
+			{% else %}
 		Puheenvuoro on toisella osapuolella.
+			{% endif %}
 		{% else %}{% if debate|can_send:user == 0 %}
 		Voit esittää avausargumenttisi.
 		<br />
