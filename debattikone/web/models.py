@@ -107,23 +107,27 @@ class Debate(models.Model):
         3 - closing
         """
 
-        # Users must be set
-        if self.user1 is None or self.user2 is None:
+        messages = self.debatemessage_set.all()
+
+        # Assume numbers to not exceed line lengths ;P
+        opening_messages = [m for m in messages if m.argument_type == 0]
+        normal_messages = [m for m in messages if m.argument_type in (1, 2)]
+        closing_messages = [m for m in messages if m.argument_type == 3]
+
+        len_opening = len(opening_messages)
+        len_normal = len(normal_messages)
+        len_closing = len(closing_messages)
+
+        # Users must be set, or user1 may open
+        if self.user1 is None and self.user2 is None:
             return None
+        elif self.user1 is not None and self.user2 is None:
+            if self.user1 == user:
+                if len(opening_messages) == 0:
+                    return TYPE_OPEN
 
         # Users must be proper
         if self.user1 == user or self.user2 == user:
-            messages = self.debatemessage_set.all()
-
-            # Makes assumptions about numbers :(
-            opening_messages = [m for m in messages if m.argument_type == 0]
-            normal_messages = [m for m in messages if m.argument_type in (1, 2)]
-            closing_messages = [m for m in messages if m.argument_type == 3]
-
-            len_opening = len(opening_messages)
-            len_normal = len(normal_messages)
-            len_closing = len(closing_messages)
-
             if len_opening < 2:
                 # User1 or User2 starts, no matter which
                 if self.user1 == user:
@@ -276,7 +280,10 @@ class Debate(models.Model):
 
         mail_message.from_email = 'debattikone@debattikone.fi'
 
-        mail_message.bcc = [self.user1.email, self.user2.email] + followers
+        # Do not mail self
+        mail_message.bcc = followers
+        if self.user2 is not None:
+            mail_message.bcc.append(self.user2.email)
 
         mail_message.send()
 
