@@ -6,6 +6,8 @@ from django.core.urlresolvers import reverse
 
 from django.contrib.auth import models as auth_models
 
+from annoying.functions import get_object_or_None
+
 from django.core import mail
 
 from django.db import connections
@@ -66,11 +68,11 @@ def test_012_login_bad_name():
 
     res = c.post(reverse('index'), data)
 
-    retval = res.status_code
-    exp_retval = 200
-    assert retval == exp_retval, '%s != %s\n%s' % (retval, exp_retval, res.content)
+    assert_ok(res)
 
     assert_form_error(res, 'login_form', 'l_username', 'Virheellinen käyttäjätunnus')
+
+    assert_template_not_used(res, '666index.html')
 
 def test_013_login_ok():
     """antagonist finally logs in
@@ -245,6 +247,65 @@ def test_112_open():
     retval = len(mail.outbox)
     exp_retval = 2
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
+
+def test_200_fourth_creates_topic():
+    new_topic_location = reverse('new_topic')
+
+    res = c.get(new_topic_location)
+    assert_ok(res)
+
+    ## Apparently posting data = {} does not cause errors here?
+    # First test title is broken
+    data = {
+        'summary': 'fourth created this trolololoo'
+    }
+    res = c.post(new_topic_location, data)
+
+    assert_form_error(res, 'new_topic_form', 'title', 'Tämä tieto tarvitaan')
+
+    # Then test summary is broken
+    data = {
+        'title': 'fourth created'
+    }
+    res = c.post(new_topic_location, data)
+
+    assert_form_error(res, 'new_topic_form', 'summary', 'Tämä tieto tarvitaan')
+
+    # Succeed
+    data = {
+        'title': 'fourth created',
+        'summary': 'fourth created this trolololoo',
+        'debate': 'yesplzkthxbai',
+    }
+    res = c.post(new_topic_location, data)
+    assert_redirects(res, reverse('new_debate', args=('fourth-created',)))
+
+def test_210_fourth_creates_debate():
+    new_debate_location = reverse('new_debate', args=('fourth-created',))
+
+    # Database hax :/
+    topic = get_object_or_None(models.Topic, slug='fourth-created')
+    assert topic is not None, 'Getting "fourth-created" failed'
+
+    # Do not invite anyone
+    data = {
+        'topic': topic.id,
+    }
+    res = c.post(new_debate_location, data)
+    assert_code(res, 302)
+
+    # Now we know we're going places
+    globals()['debate_location'] = res['Location']
+
+def test_220_fourth_can_open_without_other_participant():
+    debate_location = globals()['debate_location']
+    del globals()['debate_location']
+
+    data = {
+        'message': 'I am fourth, I open my recently-created debate',
+    }
+    res = c.post(debate_location, data)
+    assert_redirects(res, debate_location)
 
 def teardown():
     for db in connections:
