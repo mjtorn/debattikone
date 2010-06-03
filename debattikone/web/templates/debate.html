@@ -26,6 +26,28 @@
 			{% endif %}
 
 	{% if not debate_table and request.user.id %}
+		{% if debate|can_send:user == 0 %}
+		<tr>
+			<td>
+			<form method="post" action="">
+			{% csrf_token %}
+			{{ debate_message_form.as_p }}
+			<input type="submit" name="submit" value="Lähetä viesti "/>
+			</form>
+				{% if debate.invited %}
+			{{ debate.invited }} on kutsuttu.
+				{% endif %}
+			</td>
+			<td>
+				<p>
+					Debatti odottaa toista osallistujaa.
+				</p>
+				<p>
+					Voit siitä huolimatta esittää avausargumenttisi
+				</p>
+			</td>
+		</tr>
+		{% endif %}
 	{% if not debate.is_pending and not debate.is_closed %}
 	<tr>
 		<td>
