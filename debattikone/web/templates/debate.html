@@ -6,7 +6,7 @@
 	{{ debate.topic.summary }}
 </p>
 
-<table>
+<table class="debate_table">
 	<tr>
 		<td colspan="2">
 		{% if debate.is_pending and debate|can_send:user == 0 %}
@@ -55,21 +55,38 @@
 		</td>
 	</tr>
 
-	{% if not debate.is_pending %}
 	<tr>
-		<th>{{ debate.user1 }}</th><th>{{ debate.user2 }}</th>
-	</tr>
+		<th>{{ debate.user1 }}</th>
+	{% if not debate.is_pending %}
+		<th>{{ debate.user2 }}</th>
+	{% else %}
+		<th>Toinen käyttäjä puuttuu vielä</th>
 	{% endif %}
+	</tr>
 
 	{% if not debate_table and request.user.id %}
 	{% if not debate.is_pending and not debate.is_closed %}
-	<tr><td colspan="2">
-		<form method="post" action="">
-		{% csrf_token %}
-		{{ debate_message_form.as_p }}
-		<input type="submit" name="submit" value="Lähetä viesti "/>
-		</form>
-	</td></tr>
+	<tr>
+		<td>
+		{% if request.user == debate.user1 %}
+			<form method="post" action="">
+			{% csrf_token %}
+			{{ debate_message_form.as_p }}
+			<input type="submit" name="submit" value="Lähetä viesti "/>
+			</form>
+		</td>
+		<td>
+		{% else %}
+		</td>
+		<td>
+			<form method="post" action="">
+			{% csrf_token %}
+			{{ debate_message_form.as_p }}
+			<input type="submit" name="submit" value="Lähetä viesti "/>
+			</form>
+		{% endif %}
+		</td>
+	</tr>
 	{% endif %}
 	{% else %}
 	{% for row in debate_table %}
@@ -81,14 +98,29 @@
 	{% endfor %}
 	</tr>
 
+	{# wtf is this for #}
 	{% if forloop.last and request.user.id and debate|can_send:user != None %}
-	<tr><td colspan="2">
-		<form method="post" action="">
-		{% csrf_token %}
-		{{ debate_message_form.as_p }}
-		<input type="submit" name="submit" value="Lähetä viesti" />
-		</form>
-	</td></tr>
+<tr>
+		<td>
+		{% if request.user == debate.user1 %}
+			<form method="post" action="">
+			{% csrf_token %}
+			{{ debate_message_form.as_p }}
+			<input type="submit" name="submit" value="Lähetä viesti "/>
+			</form>
+		</td>
+		<td>
+		{% else %}
+		</td>
+		<td>
+			<form method="post" action="">
+			{% csrf_token %}
+			{{ debate_message_form.as_p }}
+			<input type="submit" name="submit" value="Lähetä viesti "/>
+			</form>
+		{% endif %}
+		</td>
+</tr>
 	{% endif %}
 	{% endfor %}
 	{% endif %}
