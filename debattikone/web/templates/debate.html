@@ -26,7 +26,7 @@
 			{% endif %}
 
 	{% if not debate_table and request.user.id %}
-		{% if debate|can_send:user == 0 %}
+		{% if request.user == debate.user1 and debate|can_send:user == 0 and debate.user2 == None %}
 		<tr>
 			<td>
 			<form method="post" action="">
