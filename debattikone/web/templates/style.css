@@ -71,5 +71,18 @@ a {
 	font-family: 'Georgia', 'Times New Roman';
 }
 
+table.debate_table {
+	width: 690px;
+}
+
+table.debate_table tr {
+	width: 100%;
+}
+table.debate_table td {
+	border: 1px solid black;
+	width: 50%;
+	padding: 5px;
+}
+
 /* EOF */
 
