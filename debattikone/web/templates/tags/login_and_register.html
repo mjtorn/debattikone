@@ -2,7 +2,10 @@
 		<form action="" method="post">
 		{% csrf_token %}
 		{% include "tags/login.html" %}
+		</form>
 		<hr />
+		<form action="" method="post">
+		{% csrf_token %}
 		{% include "tags/register.html" %}
 		</form>
 		{% else %}
