@@ -116,10 +116,14 @@
 	{% endfor %}
 	{% endif %}
 </table>
-{% if request.user.id and debate|can_send:user == None %}
+{% if request.user.id %}
+{% if request.user == debate.user1 or request.user == debate.user2 %}
+{% if debate|can_send:user == None %}
 <div style="margin-top: 16px;">
 		{% include "tags/help.html" %}
 </div>
+{% endif %}
+{% endif %}
 {% endif %}
 {% endblock %}
 
