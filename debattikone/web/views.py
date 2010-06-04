@@ -189,6 +189,8 @@ def debate_list(request, filter=None):
     elif filter == 'current':
         debates = debates.exclude(user2__isnull=True)
         debates = [d for d in debates if not d.is_closed()]
+    elif filter == 'closed':
+        debates = [d for d in debates if d.is_closed()]
 
     context = {
         'debates': debates,
