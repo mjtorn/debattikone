@@ -222,7 +222,7 @@ def test_112_open():
     assert_redirects(res, current_location)
 
     ## Test d2 got correct table in db
-    retval = d2.get_table()
+    retval = d2.get_table(as_text=True)
     exp_retval = [['', u2o]]
     assert retval == exp_retval, 'Table mismatch'
 
