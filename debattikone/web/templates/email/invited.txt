@@ -1,3 +1,4 @@
+{% autoescape off %}
 Sinut on kutsuttu debatoimaan aiheesta {{ topic.title }}
 käyttäjän {{ user1.username }} kanssa sivulla http://debattikone.fi/
 
@@ -7,4 +8,5 @@ http://debattikone.fi{{ uri }}
 
 -- 
 debattikone
+{% endautoescape %}
 

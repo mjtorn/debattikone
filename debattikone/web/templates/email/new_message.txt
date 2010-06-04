@@ -1,3 +1,4 @@
+{% autoescape off %}
 Käyttäjä {{ user.username }} lähetti viestin aiheeseen {{ topic.title }}.
 
 === VIESTI ===
@@ -9,4 +10,5 @@ http://debattikone.fi{{ uri }}
 
 -- 
 debattikone
+{% endautoescape %}
 
