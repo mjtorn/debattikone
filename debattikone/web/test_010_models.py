@@ -199,7 +199,7 @@ def test_111_user1_opens():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['user1_open_arg'] = 'user1 opening argument'
-    debate.send(mjt, retval, user1_open_arg)
+    globals()['user1_open_arg'] = debate.send(mjt, retval, user1_open_arg)
 
     retval = debate.get_table()
     exp_retval = [[user1_open_arg, '']]
@@ -216,7 +216,7 @@ def test_112_user2_presents_open():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['user2_open_arg'] = 'user2 opening argument'
-    debate.send(antagonist, retval, user2_open_arg)
+    globals()['user2_open_arg'] = debate.send(antagonist, retval, user2_open_arg)
 
     print [s.argument_type for s in debate.debatemessage_set.all()]
 
@@ -241,7 +241,7 @@ def test_113_user1_first_q():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u1q1'] = 'user1 first question'
-    debate.send(mjt, retval, u1q1)
+    globals()['u1q1'] = debate.send(mjt, retval, u1q1)
 
     retval = debate.get_table()
     exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, '']]
@@ -259,7 +259,7 @@ def test_114_user2_first_re():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u2r1'] = 'user2 first re'
-    debate.send(antagonist, retval, u2r1)
+    globals()['u2r1'] = debate.send(antagonist, retval, u2r1)
 
     retval = debate.get_table()
     exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, ''], ['', u2r1]]
@@ -291,7 +291,7 @@ def test_116_user2_first_q_and_user1_re():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u2q1'] = 'user2 first q'
-    debate.send(antagonist, retval, u2q1)
+    globals()['u2q1'] = debate.send(antagonist, retval, u2q1)
 
     retval = debate.get_table()
     exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, ''], ['', u2r1], ['', u2q1]]
@@ -302,7 +302,7 @@ def test_116_user2_first_q_and_user1_re():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     globals()['u1r1'] = 'user1 first re'
-    debate.send(mjt, retval, u1r1)
+    globals()['u1r1'] = debate.send(mjt, retval, u1r1)
 
     retval = debate.get_table()
     exp_retval = [[user1_open_arg, user2_open_arg], [u1q1, ''], ['', u2r1], ['', u2q1], [u1r1, '']]
@@ -344,10 +344,10 @@ def test_117_rest_of_the_debate():
         exp_retval = TYPE_QUESTION
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-        debate.send(mjt, retval, 'user1 q')
+        msg = debate.send(mjt, retval, 'user1 q')
 
         # To test
-        exp_state.append(['user1 q', ''])
+        exp_state.append([msg, ''])
 
         retval = debate.get_table()
         assert retval == exp_state, 'Table mismatch, %s' % retval
@@ -357,10 +357,10 @@ def test_117_rest_of_the_debate():
         exp_retval = TYPE_REPLY
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-        debate.send(antagonist, retval, 'user2 re')
+        msg = debate.send(antagonist, retval, 'user2 re')
 
         # User2's reply is edited in-place like
-        exp_state.append(['', 'user2 re'])
+        exp_state.append(['', msg])
 
         retval = debate.get_table()
         assert retval == exp_state, 'Table mismatch'
@@ -370,10 +370,10 @@ def test_117_rest_of_the_debate():
         exp_retval = TYPE_QUESTION
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-        debate.send(antagonist, retval, 'user2 q')
+        msg = debate.send(antagonist, retval, 'user2 q')
 
         # Update state
-        exp_state.append(['', 'user2 q'])
+        exp_state.append(['', msg])
 
         retval = debate.get_table()
         assert retval == exp_state, 'Table mismatch'
@@ -383,10 +383,10 @@ def test_117_rest_of_the_debate():
         exp_retval = TYPE_REPLY
         assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-        debate.send(mjt, retval, 'user1 re')
+        msg = debate.send(mjt, retval, 'user1 re')
 
         # Update state
-        exp_state.append(['user1 re', ''])
+        exp_state.append([msg, ''])
 
         retval = debate.get_table()
         assert retval == exp_state, 'Table mismatch'
@@ -412,11 +412,10 @@ def test_118_finalize_debate():
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
     ## User1 does so
-    u1c = 'user1 closes'
-    debate.send(mjt, TYPE_CLOSING, u1c)
+    msg = debate.send(mjt, TYPE_CLOSING, 'user1 closes')
 
     retval = debate.get_table()
-    exp_state.append([u1c, ''])
+    exp_state.append([msg, ''])
     assert retval == exp_state, 'Table mismatch, %s' % retval
 
     # User1 tries again
@@ -424,24 +423,15 @@ def test_118_finalize_debate():
     exp_retval = TYPE_NOTHING
     assert retval == exp_retval, '%s != %s' % (retval, exp_retval)
 
-    # Forcibly sends
-    u1c = 'user1 closes'
-    debate.send(mjt, TYPE_CLOSING, u1c)
-
-    # Still a fail
-    retval = debate.get_table()
-    #exp_state.append([u1c, ''])
-    assert retval == exp_state, 'Table mismatch, %s' % retval
-
     ## User2 closes
     u2c = 'user2 closes'
-    debate.send(antagonist, TYPE_CLOSING, u2c)
+    msg = debate.send(antagonist, TYPE_CLOSING, u2c)
 
     retval = debate.get_table()
 
     # Update the state
-    exp_state[-1][1] = u2c
-    assert retval == exp_state, 'Table mismatch, %s' % retval
+    exp_state[-1][1] = msg
+    assert retval == exp_state, 'Table mismatch, %s\n%s' % (retval, exp_state)
 
     ## Make sure these are closed
     retval = debate.can_send(mjt)
