@@ -221,7 +221,7 @@ class Debate(models.Model):
                 row_idx = 1
 
             ## Where to go
-            row[row_idx] = message.argument
+            row[row_idx] = message
 
             # Flush if last message
             if next_message is None:
