@@ -200,7 +200,7 @@ class Debate(models.Model):
 
         return msg
 
-    def get_table(self):
+    def get_table(self, as_text=False):
         debate_table = []
 
         messages = self.debatemessage_set.all().order_by('id')
@@ -221,7 +221,10 @@ class Debate(models.Model):
                 row_idx = 1
 
             ## Where to go
-            row[row_idx] = message
+            if as_text:
+                row[row_idx] = message.argument
+            else:
+                row[row_idx] = message
 
             # Flush if last message
             if next_message is None:
