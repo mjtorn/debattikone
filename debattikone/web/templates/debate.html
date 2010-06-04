@@ -78,7 +78,11 @@
 	<tr>
 	{% for cell in row %}
 	<td>
+	{% if cell.argument_type == 0 or cell.argument_type == 3 %}
+	<em>{{ cell }}</em>
+	{% else %}
 	{{ cell }}
+	{% endif %}
 	</td>
 	{% endfor %}
 	</tr>
