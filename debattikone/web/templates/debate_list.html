@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if debates %}
 {% for debate in debates %}
 {% include "tags/debate.html" %}
 {% endfor %}
+{% else %}
+Debatteja ei löytynyt.
+{% endif %}
 {% endblock %}
 
 
